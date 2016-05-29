@@ -1,0 +1,42 @@
+<!DOCTYPE html>  
+<html>  
+  
+    <head>  
+        <meta charset="utf-8">  
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />  
+        <title></title>  
+        <style type="text/css">  
+            #div1 {  
+                width: 100px;  
+                height: 100px;  
+                background: green;  
+                position: absolute;  
+                left: 10px;  
+                top: 10px;  
+                overflow: hidden;  
+                outline: 0;  
+            }  
+        </style>  
+    </head>  
+  
+    <body>  
+        <div id="div1">div1</div>  
+  
+        <script src="../js/jquery-2.1.1.js" type="text/javascript" charset="utf-8"></script>  
+        <script src="jquery.drag.js" type="text/javascript" charset="utf-8"></script>  
+        <script type="text/javascript">  
+            $('#div1').drag({  
+                before: function(e) {  
+                    $(this).text('拖动前' + e.pageX);  
+                },  
+                process: function(e) {  
+                    document.title = '拖动中' + e.pageY;  
+                },  
+                end: function(e) {  
+                    $(this).text('拖动完' + e.pageX);  
+                }  
+            });  
+        </script>  
+    </body>  
+  
+</html>  
