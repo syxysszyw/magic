@@ -80,6 +80,10 @@ $(function(){
     var screenH = window.screen.availHeight;
 
     $prop.on('touchmove', function(event) {
+
+    	console.log('touches', event.touches);
+    	console.log('targetTouches', event.targetTouches);
+    	console.log('changeTouches', event.changeTouches);
         event.preventDefault();//阻止其他事件
 
         // 如果这个元素的位置内只有一个手指的话
@@ -95,11 +99,12 @@ $(function(){
         // 边界判断
         var currentL = parseInt($prop.css('left'), 10);
         var currentT = parseInt($prop.css('top'), 10);
-        console.log(currentL + ' ' + currentT);
+        console.log('currentL ' + currentL + ' , currentT' + currentT);
 
         // if(currentL < 0 - propHalfW || currentL > screenW - propHalfW || currentT < 0 - propHalfH || currentT > screenH - propHalfH) {
         if(currentL < 0 || currentL + propW > screenW || currentT < 0 || currentT + propH > screenH ) {
-            $prop.hide('slow');
+            // $prop.hide('slow');
+            $prop.fadeOut();
         }
 
     });
