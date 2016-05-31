@@ -53,6 +53,10 @@
     right: 0;
     bottom: 0;
     overflow: hidden;
+
+    /* background */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 #bg-container img{
     width: 100%;
