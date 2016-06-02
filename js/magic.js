@@ -1,9 +1,26 @@
 $(function(){
 
-    /* 读文件 */
-    var $file = $("#file");
     var $bgContainer = $("#bg-container");
+    var $file = $("#file");
     var $prop = $('.prop');
+    var $btn = $('.weui_uploader_input_wrp');
+
+    function setBg(container, result) {
+        /* 用img */
+        // $bgContainer.html('<img src="' + result +'" alt="" />');  
+
+        /* 用background-image */
+        container.css({
+            'background-image': 'url(' + result + ')'
+        })
+    }
+
+    if (localStorage.defaultBg) {
+        $btn.hide();
+        setBg($bgContainer, localStorage.defaultBg)
+    } 
+
+    /* 读文件 */
     var isPropUndefined = true;
 
     $file.on('change', function(){
@@ -26,17 +43,14 @@ $(function(){
         reader.onload = function(e){  
 
         	// console.log(this.result)
-        	console.log(convertImgDataToBlob(this.result))
-            
-            /* 用img */
-            // $bgContainer.html('<img src="' + this.result +'" alt="" />');  
+        	// console.log(convertImgDataToBlob(this.result))
+   
+            setBg($bgContainer, this.result);
 
-            /* 用background-image */
-            $bgContainer.css({
-            	'background-image': 'url(' + this.result + ')'
-            })
 
-            $('.weui_uploader_input_wrp').hide();
+            localStorage.defaultBg = this.result;
+
+            $btn.hide();
         }  
     } 
 
@@ -140,6 +154,7 @@ var convertImgDataToBlob = function (base64Data) {
         }
     }
     init();
+
     /* 拖动 */
     var propL = $prop.css('left');
     var propT = $prop.css('top');
@@ -206,4 +221,30 @@ var convertImgDataToBlob = function (base64Data) {
 	launchFullscreen(document.documentElement); // 整个网页
 	launchFullscreen(document.getElementById('bg-container')); // 某个页面元素
 	/* Failed to execute 'requestFullScreen' on 'Element': API can only be initiated by a user gesture. */
+
+    /* 三击 */
+    var count = 0, timer;
+
+
+
+    $bgContainer.on('touchend',function() {
+        if(count < 2){
+            if(timer){
+                clearTimeout(timer);
+            }
+            count ++;
+            timer = setTimeout(function(){
+                count = 0;
+            }, 500);
+        }else if(count === 2){
+            count = 0;
+            clearTimeout(timer);
+            threeClick();
+        }
+    });
+
+    function threeClick(){
+        // alert("tap");
+        $file.trigger('click');
+    }
 })
