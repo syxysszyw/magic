@@ -158,8 +158,8 @@ var convertImgDataToBlob = function (base64Data) {
     /* 拖动 */
     var propL = $prop.css('left');
     var propT = $prop.css('top');
-    var screenW = window.screen.availWidth;
-    var screenH = window.screen.availHeight;
+    var windowW = $(window).width();
+    var windowH = $(window).height();
     var propOffsetL, propOffsetT;
 
     $prop.on('touchstart', function(event) {
@@ -212,7 +212,7 @@ var convertImgDataToBlob = function (base64Data) {
         // console.log('currentL ' + currentL + ' , currentT' + currentT);
 
         // if(currentL < 0 - propHalfW || currentL > screenW - propHalfW || currentT < 0 - propHalfH || currentT > screenH - propHalfH) {
-        if(currentL < 0 || currentL + propW > screenW || currentT < 0 || currentT + propH > screenH ) {
+        if(currentL < 0 || currentL + propW > windowW || currentT < 0 || currentT + propH > windowH ) {
             $prop.hide('slow');
         }
 
