@@ -158,26 +158,20 @@ var convertImgDataToBlob = function (base64Data) {
     /* 拖动 */
     var propL = $prop.css('left');
     var propT = $prop.css('top');
-    var screenW = $(window).width();
-    var screenH = $(window).height();
+    var screenW = window.screen.availWidth;
+    var screenH = window.screen.availHeight;
     var propOffsetL, propOffsetT;
-    var limitL, limitT, limitR, limitB;
-
 
     $prop.on('touchstart', function(event) {
+        console.log(event);
+        console.log('event.target.x' + event.target.x);
+    	console.log('event.target.y' + event.target.y);
 
     	if (isPropUndefined) {
     		propW = $prop.width();
 		    propH = $prop.height();
 		    propHalfW = $prop.width()/2;
 		    propHalfH = $prop.height()/2;
-
-            // limit
-            limitL = 0 - propHalfW;
-            limitT = 0 - propHalfH;
-            limitR = screenW - propHalfW;
-            limitB = screenH - propHalfH;
-
 		    isPropUndefined = !isPropUndefined;
     	}
 
@@ -193,6 +187,9 @@ var convertImgDataToBlob = function (base64Data) {
         // console.log('propOffsetT', propOffsetT);
         
     }).on('touchmove', function(event) {
+    	// console.log('touches', event.touches);
+    	// console.log('targetTouches', event.targetTouches);
+    	// console.log('changeTouches', event.changeTouches);
         event.preventDefault();//阻止其他事件
 
         // 如果这个元素的位置内只有一个手指的话
@@ -212,8 +209,10 @@ var convertImgDataToBlob = function (base64Data) {
         // 边界判断
         var currentL = parseInt($prop.css('left'), 10);
         var currentT = parseInt($prop.css('top'), 10);
+        // console.log('currentL ' + currentL + ' , currentT' + currentT);
 
-        if(currentL < limitL || currentL > limitR || currentT < limitT || currentT > limitB) {
+        // if(currentL < 0 - propHalfW || currentL > screenW - propHalfW || currentT < 0 - propHalfH || currentT > screenH - propHalfH) {
+        if(currentL < 0 || currentL + propW > screenW || currentT < 0 || currentT + propH > screenH ) {
             $prop.hide('slow');
         }
 
