@@ -225,9 +225,27 @@ var convertImgDataToBlob = function (base64Data) {
     /* 三击 */
     var count = 0, timer;
 
+    // $bgContainer.on('touchend',function() {
+    // $bgContainer.on('touchstart',function() {
+    //     if(count < 2){
+    //         if(timer){
+    //             clearTimeout(timer);
+    //         }
+    //         count ++;
+    //         timer = setTimeout(function(){
+    //             count = 0;
+    //         }, 500);
+    //     }else if(count === 2){
+    //         count = 0;
+    //         clearTimeout(timer);
+    //         threeClick();
+    //     }
+    // });
 
-
-    $bgContainer.on('touchend',function() {
+    function threeClick() {
+        $file.trigger('click');
+    }
+    $bgContainer.tap(function() {
         if(count < 2){
             if(timer){
                 clearTimeout(timer);
@@ -241,10 +259,6 @@ var convertImgDataToBlob = function (base64Data) {
             clearTimeout(timer);
             threeClick();
         }
-    });
+    })
 
-    function threeClick(){
-        // alert("tap");
-        $file.trigger('click');
-    }
 })
