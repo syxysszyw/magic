@@ -160,9 +160,12 @@ var convertImgDataToBlob = function (base64Data) {
     var propT = $prop.css('top');
     var screenW = window.screen.availWidth;
     var screenH = window.screen.availHeight;
+    var propOffsetL, propOffsetT;
 
     $prop.on('touchstart', function(event) {
-    	console.log('touchstart');
+        console.log(event);
+        console.log('event.target.x' + event.target.x);
+    	console.log('event.target.y' + event.target.y);
 
     	if (isPropUndefined) {
     		propW = $prop.width();
@@ -171,9 +174,19 @@ var convertImgDataToBlob = function (base64Data) {
 		    propHalfH = $prop.height()/2;
 		    isPropUndefined = !isPropUndefined;
     	}
-	    
+
+        if (event.targetTouches.length == 1) {
+
+            var touch = event.targetTouches[0];
+
+            propOffsetL = touch.pageX - $prop.offset().left;
+            propOffsetT = touch.pageY - $prop.offset().top;
+        }
+
+        // console.log('propOffsetL', propOffsetL);
+        // console.log('propOffsetT', propOffsetT);
+        
     }).on('touchmove', function(event) {
-    	console.log('touchmove');
     	// console.log('touches', event.touches);
     	// console.log('targetTouches', event.targetTouches);
     	// console.log('changeTouches', event.changeTouches);
@@ -185,8 +198,9 @@ var convertImgDataToBlob = function (base64Data) {
             var touch = event.targetTouches[0];  // 把元素放在手指所在的位置
 
             $prop.css({
-                'left': touch.pageX - propHalfW + 'px',
-                'top': touch.pageY - propHalfH + 'px'
+                'left': touch.pageX - propOffsetL + 'px',
+                'top': touch.pageY - propOffsetT + 'px'
+                
             })
        }
 
