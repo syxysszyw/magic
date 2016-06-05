@@ -48,7 +48,8 @@ $(function(){
             setBg($bgContainer, this.result);
 
 
-            localStorage.defaultBg = this.result;
+            // localStorage.defaultBg = this.result;
+            localStorage.setItem('defaultBg', this.result);
 
             $btn.hide();
         }  
@@ -57,7 +58,7 @@ $(function(){
     function readAsBinaryString(){
     	var file = $file[0].files[0];
     	if(!/image\/\w+/.test(file.type)){  
-            alert("看清楚，这个需要图片！");  
+            alert("只能选择图片当背影哦");  
             return false;  
         }  
         var reader = new FileReader();  
@@ -65,7 +66,7 @@ $(function(){
         reader.readAsBinaryString(file);  
 
         reader.onload = function(e) {
-        	console.log(this.result)
+        	// console.log(this.result)
         }
     }
 
@@ -141,7 +142,7 @@ var convertImgDataToBlob = function (base64Data) {
             z = acceleration.z;
             var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
  
-            if (speed > 2000) {
+            if (speed > 2000 && $prop.css('display') !== 'block') {
                 // alert("摇动了");
                 $prop.show().css({
                 	'top': '0px',
@@ -163,9 +164,9 @@ var convertImgDataToBlob = function (base64Data) {
     var propOffsetL, propOffsetT;
 
     $prop.on('touchstart', function(event) {
-        console.log(event);
-        console.log('event.target.x' + event.target.x);
-    	console.log('event.target.y' + event.target.y);
+     //    console.log(event);
+     //    console.log('event.target.x' + event.target.x);
+    	// console.log('event.target.y' + event.target.y);
 
     	if (isPropUndefined) {
     		propW = $prop.width();
@@ -190,6 +191,11 @@ var convertImgDataToBlob = function (base64Data) {
     	// console.log('touches', event.touches);
     	// console.log('targetTouches', event.targetTouches);
     	// console.log('changeTouches', event.changeTouches);
+
+
+        // console.log('propOffsetL', propOffsetL);
+        // console.log('propOffsetT', propOffsetT);
+
         event.preventDefault();//阻止其他事件
 
         // 如果这个元素的位置内只有一个手指的话
@@ -205,16 +211,27 @@ var convertImgDataToBlob = function (base64Data) {
        }
 
     }).on('touchend', function(event) {
-    	console.log('touchend');
-        // 边界判断
-        var currentL = parseInt($prop.css('left'), 10);
-        var currentT = parseInt($prop.css('top'), 10);
-        // console.log('currentL ' + currentL + ' , currentT' + currentT);
 
-        // if(currentL < 0 - propHalfW || currentL > screenW - propHalfW || currentT < 0 - propHalfH || currentT > screenH - propHalfH) {
-        if(currentL < 0 || currentL + propW > windowW || currentT < 0 || currentT + propH > windowH ) {
+        // 这个时候已经没有 event.targetTouches了
+
+        var leaveTouchPageX = propOffsetL + $prop.offset().left;
+        var leaveTouchPageY = propOffsetT + $prop.offset().top;        
+
+        // 边界判断
+
+        // 1. 当 touchend 的时候手指已经到达屏幕边缘，再让图片消失
+        if(leaveTouchPageX <= 10 || leaveTouchPageX >= windowW - 10 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
             $prop.hide('slow');
         }
+
+        // var currentL = parseInt($prop.css('left'), 10);
+        // var currentT = parseInt($prop.css('top'), 10);
+
+        // if(currentL < 0 || currentL + propW > windowW || currentT < 0 || currentT + propH > windowH ) {
+
+        //     $prop.hide('slow');
+        // }
+
 
     });
 
