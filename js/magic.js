@@ -118,8 +118,8 @@ var convertImgDataToBlob = function (base64Data) {
     var x = y = z = last_x = last_y = last_z = 0;
 
     // 一开始$prop隐藏，此时无法获取 $prop 的宽和高，所以应该在 $prop show()的时候获取宽高值。
-    var propW;
-    var propH;
+    var propW = 250;
+    var propH = 222;
     var propHalfW;
     var propHalfH;
 
@@ -148,6 +148,8 @@ var convertImgDataToBlob = function (base64Data) {
                 	'top': '0px',
                 	'left': '0px'
                 });
+
+                $(window).on('deviceorientation', handleOrientation);
             }
             last_x = x;
             last_y = y;
@@ -175,16 +177,13 @@ var convertImgDataToBlob = function (base64Data) {
         $(window).off('deviceorientation', handleOrientation);
 
     	if (isPropUndefined) {
-    		propW = $prop.width();
-		    propH = $prop.height();
+    		// propW = $prop.width();
+		    // propH = $prop.height();
 		    propHalfW = $prop.width()/2;
 		    propHalfH = $prop.height()/2;
 
             maxOffsetL = windowW - propW;
             maxOffsetT = windowH - propH;
-
-            alert(maxOffsetL);
-            alert(maxOffsetT);
 
 		    isPropUndefined = !isPropUndefined;
     	}
@@ -216,9 +215,14 @@ var convertImgDataToBlob = function (base64Data) {
 
             var touch = event.targetTouches[0];  // 把元素放在手指所在的位置
 
+            propL = touch.pageX - propOffsetL;
+            propT = touch.pageY - propOffsetT;
+            
             $prop.css({
-                'left': touch.pageX - propOffsetL + 'px',
-                'top': touch.pageY - propOffsetT + 'px'
+                // 'left': touch.pageX - propOffsetL + 'px',
+                // 'top': touch.pageY - propOffsetT + 'px'
+                'left': propL + 'px',
+                'top': propT + 'px'
                 
             })
        }
@@ -228,7 +232,8 @@ var convertImgDataToBlob = function (base64Data) {
         // 这个时候已经没有 event.targetTouches了
 
         $(window).on('deviceorientation', handleOrientation);
-
+        // alert('propL:' + propL);
+        // alert('propT:' + propT);
 
         var leaveTouchPageX = propOffsetL + $prop.offset().left;
         var leaveTouchPageY = propOffsetT + $prop.offset().top;        
@@ -255,7 +260,7 @@ var convertImgDataToBlob = function (base64Data) {
 
     /* orientation */
 
-    $(window).on('deviceorientation', handleOrientation);
+    // $(window).on('deviceorientation', handleOrientation);
     var pvx = 0;
     var pvy = 0;
     
