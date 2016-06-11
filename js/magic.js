@@ -164,8 +164,9 @@ var convertImgDataToBlob = function (base64Data) {
 
     var windowW = $(window).width();
     var windowH = $(window).height();
-
-    var maxOffsetL , maxOffsetT;
+    
+    var maxOffsetL = windowW - propW;
+    var maxOffsetT = windowH - propH;
 
     var propOffsetL, propOffsetT;
 
@@ -182,8 +183,6 @@ var convertImgDataToBlob = function (base64Data) {
 		    propHalfW = $prop.width()/2;
 		    propHalfH = $prop.height()/2;
 
-            maxOffsetL = windowW - propW;
-            maxOffsetT = windowH - propH;
 
 		    isPropUndefined = !isPropUndefined;
     	}
@@ -217,7 +216,7 @@ var convertImgDataToBlob = function (base64Data) {
 
             propL = touch.pageX - propOffsetL;
             propT = touch.pageY - propOffsetT;
-            
+
             $prop.css({
                 // 'left': touch.pageX - propOffsetL + 'px',
                 // 'top': touch.pageY - propOffsetT + 'px'
