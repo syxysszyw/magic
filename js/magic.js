@@ -157,22 +157,35 @@ var convertImgDataToBlob = function (base64Data) {
     init();
 
     /* 拖动 */
-    var propL = $prop.css('left');
-    var propT = $prop.css('top');
+    var propL = parseInt($prop.css('left'));
+    var propT = parseInt($prop.css('top'));
+
     var windowW = $(window).width();
     var windowH = $(window).height();
+
+    var maxOffsetL , maxOffsetT;
+
     var propOffsetL, propOffsetT;
 
     $prop.on('touchstart', function(event) {
-     //    console.log(event);
-     //    console.log('event.target.x' + event.target.x);
+         //    console.log(event);
+         //    console.log('event.target.x' + event.target.x);
     	// console.log('event.target.y' + event.target.y);
+
+        $(window).off('deviceorientation', handleOrientation);
 
     	if (isPropUndefined) {
     		propW = $prop.width();
 		    propH = $prop.height();
 		    propHalfW = $prop.width()/2;
 		    propHalfH = $prop.height()/2;
+
+            maxOffsetL = windowW - propW;
+            maxOffsetT = windowH - propH;
+
+            alert(maxOffsetL);
+            alert(maxOffsetT);
+
 		    isPropUndefined = !isPropUndefined;
     	}
 
@@ -214,6 +227,9 @@ var convertImgDataToBlob = function (base64Data) {
 
         // 这个时候已经没有 event.targetTouches了
 
+        $(window).on('deviceorientation', handleOrientation);
+
+
         var leaveTouchPageX = propOffsetL + $prop.offset().left;
         var leaveTouchPageY = propOffsetT + $prop.offset().top;        
 
@@ -234,6 +250,58 @@ var convertImgDataToBlob = function (base64Data) {
 
 
     });
+
+
+
+    /* orientation */
+
+    $(window).on('deviceorientation', handleOrientation);
+    var pvx = 0;
+    var pvy = 0;
+    
+    var to ;
+    function handleOrientation(evt) {
+
+        var beta = evt.beta;   // [-180, 180]
+        var gamma = evt.gamma;   // [-90, 90]
+
+        // beta   0- 90   往下掉; -90-0  往上掉
+        // gamma  0-90   往右掉; -90-0  往左掉
+
+        to = setTimeout(function() {
+            render();
+            update(beta, gamma);
+        }, 50);
+    }
+    function render() {
+
+        $prop.css({
+            'left': propL + 'px',
+            'top': propT + 'px'
+        })
+    }
+
+    function update(beta, gamma) {
+        pvx = gamma / 90 * 10;
+        pvy = beta / 90 * 10;
+
+        propL += pvx;
+        propT += pvy;
+
+        if(propL < 0 ){
+            propL = 0;
+        }else if(propL > maxOffsetL) {
+            propL = maxOffsetL;
+        }
+
+        if(propT < 0 ){
+            propT = 0;
+        }else if(propT > maxOffsetT) {
+            propT = maxOffsetT;
+        }
+
+    }
+
 
 
     /* 全屏 */
