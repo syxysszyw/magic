@@ -60,12 +60,17 @@ img {
     overflow: hidden;
 
     /* background */
-    background-size: 100% 100%;
+    // background-size: 100% 100%;
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
 }
 #bg-container img{
-    width: 100%;
+    position: absolute;
     height: 100%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     vertical-align: bottom;
 }
 .prop {
@@ -76,6 +81,6 @@ img {
     z-index: 100;
 }
 .prop img{
-    width: 250px;
+    width: 350px;
     vertical-align: bottom;
 }

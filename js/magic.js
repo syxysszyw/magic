@@ -7,12 +7,12 @@ $(function(){
 
     function setBg(container, result) {
         /* 用img */
-        // $bgContainer.html('<img src="' + result +'" alt="" />');  
+        $bgContainer.html('<img src="' + result +'" alt="" />');  
 
         /* 用background-image */
-        container.css({
-            'background-image': 'url(' + result + ')'
-        })
+        // container.css({
+        //     'background-image': 'url(' + result + ')'
+        // })
     }
 
     if (localStorage.defaultBg) {
@@ -42,8 +42,8 @@ $(function(){
         reader.readAsDataURL(file);  
         reader.onload = function(e){  
 
-        	// console.log(this.result)
-        	// console.log(convertImgDataToBlob(this.result))
+            // console.log(this.result)
+            // console.log(convertImgDataToBlob(this.result))
    
             setBg($bgContainer, this.result);
 
@@ -56,8 +56,8 @@ $(function(){
     } 
 
     function readAsBinaryString(){
-    	var file = $file[0].files[0];
-    	if(!/image\/\w+/.test(file.type)){  
+        var file = $file[0].files[0];
+        if(!/image\/\w+/.test(file.type)){  
             alert("只能选择图片当背影哦");  
             return false;  
         }  
@@ -66,7 +66,7 @@ $(function(){
         reader.readAsBinaryString(file);  
 
         reader.onload = function(e) {
-        	// console.log(this.result)
+            // console.log(this.result)
         }
     }
 
@@ -118,8 +118,8 @@ var convertImgDataToBlob = function (base64Data) {
     var x = y = z = last_x = last_y = last_z = 0;
 
     // 一开始$prop隐藏，此时无法获取 $prop 的宽和高，所以应该在 $prop show()的时候获取宽高值。
-    var propW = 250;
-    var propH = 222;
+    var propW = 350;
+    var propH = 310;
     var propHalfW;
     var propHalfH;
 
@@ -145,8 +145,8 @@ var convertImgDataToBlob = function (base64Data) {
             if (speed > 2000 && $prop.css('display') !== 'block') {
                 // alert("摇动了");
                 $prop.show().css({
-                	'top': '0px',
-                	'left': '0px'
+                    'top': '0px',
+                    'left': '0px'
                 });
 
                 $(window).on('deviceorientation', handleOrientation);
@@ -173,19 +173,19 @@ var convertImgDataToBlob = function (base64Data) {
     $prop.on('touchstart', function(event) {
          //    console.log(event);
          //    console.log('event.target.x' + event.target.x);
-    	// console.log('event.target.y' + event.target.y);
+        // console.log('event.target.y' + event.target.y);
 
         $(window).off('deviceorientation', handleOrientation);
 
-    	if (isPropUndefined) {
-    		// propW = $prop.width();
-		    // propH = $prop.height();
-		    propHalfW = $prop.width()/2;
-		    propHalfH = $prop.height()/2;
+        if (isPropUndefined) {
+            // propW = $prop.width();
+            // propH = $prop.height();
+            propHalfW = $prop.width()/2;
+            propHalfH = $prop.height()/2;
 
 
-		    isPropUndefined = !isPropUndefined;
-    	}
+            isPropUndefined = !isPropUndefined;
+        }
 
         if (event.targetTouches.length == 1) {
 
@@ -199,9 +199,9 @@ var convertImgDataToBlob = function (base64Data) {
         // console.log('propOffsetT', propOffsetT);
         
     }).on('touchmove', function(event) {
-    	// console.log('touches', event.touches);
-    	// console.log('targetTouches', event.targetTouches);
-    	// console.log('changeTouches', event.changeTouches);
+        // console.log('touches', event.touches);
+        // console.log('targetTouches', event.targetTouches);
+        // console.log('changeTouches', event.changeTouches);
 
 
         // console.log('propOffsetL', propOffsetL);
@@ -240,7 +240,7 @@ var convertImgDataToBlob = function (base64Data) {
         // 边界判断
 
         // 1. 当 touchend 的时候手指已经到达屏幕边缘，再让图片消失
-        if(leaveTouchPageX <= 10 || leaveTouchPageX >= windowW - 10 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
+        if(leaveTouchPageX <= 20 || leaveTouchPageX >= windowW - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
             $prop.hide('slow');
         }
 
@@ -263,8 +263,16 @@ var convertImgDataToBlob = function (base64Data) {
     var pvx = 0;
     var pvy = 0;
     
-    var to ;
+    // var to ;
+    window.requestAnimationFrame = window.requestAnimationFrame ||
+     window.mozRequestAnimationFrame || 
+     window.webkitRequestAnimationFrame || 
+     window.msRequestAnimationFrame;
+
     function handleOrientation(evt) {
+
+        // currentBeta = evt.beta;
+        // currentGamma = evt.gamma;
 
         var beta = evt.beta;   // [-180, 180]
         var gamma = evt.gamma;   // [-90, 90]
@@ -272,10 +280,20 @@ var convertImgDataToBlob = function (base64Data) {
         // beta   0- 90   往下掉; -90-0  往上掉
         // gamma  0-90   往右掉; -90-0  往左掉
 
-        to = setTimeout(function() {
+        // to = setTimeout(function() {
+        //     render();
+        //     update(beta, gamma);
+        // }, 50);
+
+        // 前提是用户允许横竖屏切换
+        // window.orientation == 90  向左横屏
+        // window.orientation == -90 向右横屏
+
+        requestAnimationFrame(function() {
             render();
-            update(beta, gamma);
-        }, 50);
+            // update(beta, gamma);
+            update(evt);
+        });
     }
     function render() {
 
@@ -285,9 +303,26 @@ var convertImgDataToBlob = function (base64Data) {
         })
     }
 
-    function update(beta, gamma) {
-        pvx = gamma / 90 * 10;
-        pvy = beta / 90 * 10;
+
+    var lastBeta = 0,
+        currentBeta = 0,
+        lastGamma = 0,
+        currentGamma = 0;
+
+    function update(evt) {
+
+        currentBeta = evt.beta;
+        currentGamma = evt.gamma;
+
+        var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
+        // var absGamma = Math.abs(currentGamma);
+    
+        var betaDirection = currentBeta >= 0 ? 1 : -1;
+        // var gammaDirection = currentGamma > lastGamma ? 1 : -1;
+
+        pvy = absBeta / 90 * betaDirection * 20;
+        // pvx = absGamma / 90 * gammaDirection * 20;
+        pvx = currentGamma / 90 * 20;
 
         propL += pvx;
         propT += pvy;
@@ -304,46 +339,32 @@ var convertImgDataToBlob = function (base64Data) {
             propT = maxOffsetT;
         }
 
+        lastBeta = currentBeta;
+        lastGamma = currentGamma;
+
     }
 
 
 
     /* 全屏 */
     function launchFullscreen(element) {
-	  if(element.requestFullscreen) {
-	    element.requestFullscreen();
-	  } else if(element.mozRequestFullScreen) {
-	    element.mozRequestFullScreen();
-	  } else if(element.webkitRequestFullscreen) {
-	    element.webkitRequestFullscreen();
-	  } else if(element.msRequestFullscreen) {
-	    element.msRequestFullscreen();
-	  }
-	}
-	// 启动全屏!
-	launchFullscreen(document.documentElement); // 整个网页
-	launchFullscreen(document.getElementById('bg-container')); // 某个页面元素
-	/* Failed to execute 'requestFullScreen' on 'Element': API can only be initiated by a user gesture. */
+      if(element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    }
+    // 启动全屏!
+    launchFullscreen(document.documentElement); // 整个网页
+    launchFullscreen(document.getElementById('bg-container')); // 某个页面元素
+    /* Failed to execute 'requestFullScreen' on 'Element': API can only be initiated by a user gesture. */
 
     /* 三击 */
     var count = 0, timer;
-
-    // $bgContainer.on('touchend',function() {
-    // $bgContainer.on('touchstart',function() {
-    //     if(count < 2){
-    //         if(timer){
-    //             clearTimeout(timer);
-    //         }
-    //         count ++;
-    //         timer = setTimeout(function(){
-    //             count = 0;
-    //         }, 500);
-    //     }else if(count === 2){
-    //         count = 0;
-    //         clearTimeout(timer);
-    //         threeClick();
-    //     }
-    // });
 
     function threeClick() {
         $file.trigger('click');
@@ -365,3 +386,7 @@ var convertImgDataToBlob = function (base64Data) {
     })
 
 })
+
+
+// 改变方向运动的时候加一个延迟
+// 运动会跳，多加水平面以下的运动判断中
