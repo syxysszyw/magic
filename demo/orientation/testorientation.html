@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>testorientation</title>
+	<style type="text/css">
+	.orientation {
+
+		font-size: 60px;
+
+	}
+
+	.garden {
+		position: relative;
+		width : 200px;
+		height: 200px;
+		border: 5px solid #CCC;
+		border-radius: 10px;
+	}
+
+	.ball {
+		position: absolute;
+		top: 90px;
+		left  : 90px;
+		width : 20px;
+		height: 20px;
+		background: green;
+		border-radius: 100%;
+	}
+	</style>
+</head>
+<body>
+
+	<div class="garden">
+		<div class="ball"></div>
+	</div>
+
+	<pre class="output"></pre>
+
+
+
+	<div class="orientation">
+		<div class="alpha"></div>
+		<div class="beta"></div>
+		<div class="gamma"></div>
+		<div class="testorientation"></div>
+	</div>
+
+
+	<script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
+	<script type="text/javascript">
+		function init() {
+			if (window.DeviceMotionEvent) {
+				window.addEventListener('devicemotion', deviceMotionHandler, false);
+			} else {
+				alert('not support mobile event');
+			}
+		}
+
+		var originalAlpha = 0;
+			originalBeta = 0;
+			originalGamma = 0;
+
+
+		var ball   = document.querySelector('.ball');
+		var garden = document.querySelector('.garden');
+		var output = document.querySelector('.output');
+
+		var maxX = garden.clientWidth  - ball.clientWidth;
+		var maxY = garden.clientHeight - ball.clientHeight;
+
+
+		var originalgamma = 0, 
+			currentgamma = 0,
+			originalbeta = 0,
+			currentbeta = 0;
+
+
+		// window.addEventListener('orientationchange', function(event){
+		//     if ( window.orientation == 180 || window.orientation==0 ) {
+		//         alert("竖屏");
+		//     }
+		//     if( window.orientation == 90 || window.orientation == -90 ) {
+		//         alert("横屏");
+		//     }
+		// });
+
+		function handleOrientation(eventData) {
+
+
+
+			$('.testorientation').html(window.orientation);
+
+			
+			currentgamma = eventData.gamma;
+			currentbeta = eventData.beta;
+
+			var beta = eventData.beta >= 90 ?  180 - eventData.beta : eventData.beta <= -90 ? (-180 - eventData.beta) : eventData.beta;
+			// var beta = eventData.beta >= 0 ?  1 : -1;
+
+			var gammaOrientation = currentgamma > originalgamma ? 1 : -1;
+			// var gammaOrientation = window.orientation == 90 ? 1 : -1;
+
+
+			// var gamma = Math.abs((eventData.gamma));
+
+			// gamma  向左转一圈 0~-90, 90~0, 0~-90，90~0 会有一个“-90 到 90” 的瞬间变化，一直是在减小的过程 
+			// 整体加90  向左转一圈 90~0, 180~90, 90~0，180~90 会有一个“0 到 180” 的瞬间变化，一直是在减小的过程 
+
+			// gamma  向右转一圈 0~90, -90~0, 0~90，-90~0 会有一个“180 到 0” 的瞬间变化，一直是在增大的过程
+			// 整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程
+
+			$('.beta').html(beta / 90);
+			$('.beta').html(beta);
+			// $('.gamma').html(Math.abs((eventData.gamma)) * gammaOrientation / 90);
+			$('.gamma').html(Math.abs((eventData.gamma)) * gammaOrientation);
+
+
+
+			originalgamma = currentgamma;
+			originalbeta = currentbeta;
+
+
+			var x = event.beta;  // In degree in the range [-180,180]
+			var y = event.gamma; // In degree in the range [-90,90]
+
+			// output.innerHTML  = "beta : " + x + "\n";
+			// output.innerHTML += "gamma: " + y + "\n";
+
+			// Because we don't want to have the device upside down
+			// We constrain the x value to the range [-90,90]
+			if (x >  90) { x =  90};
+			if (x < -90) { x = -90};
+
+			// To make computation easier we shift the range of 
+			// x and y to [0,180]
+			x += 90;
+			y += 90;
+
+			// 10 is half the size of the ball
+			// It center the positioning point to the center of the ball
+			ball.style.top  = (maxX*x/180 - 10) + "px";
+			ball.style.left = (maxY*y/180 - 10) + "px";
+
+
+
+		}
+
+
+
+    var lastBeta = 0,
+        currentBeta = 0,
+        lastGamma = 0,
+        currentGamma = 0;
+
+		function had2 (evt) {
+
+			currentBeta = evt.beta;
+	        currentGamma = evt.gamma;
+
+	        var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
+	        var absGamma = Math.abs(currentGamma);
+	    
+	        var betaDirection = currentBeta >= 0 ? 1 : -1;
+	        var gammaDirection = currentGamma > lastGamma ? 1 : -1;
+
+	        pvy = absBeta / 90 * betaDirection * 20;
+	        pvx = absGamma / 90 * gammaDirection * 20;
+
+	        $('.beta').html(absBeta / 90 * betaDirection);
+			$('.gamma').html(absGamma / 90 * gammaDirection);
+
+	        lastGamma = currentBeta,
+	        currentGamma = currentGamma;
+
+		}
+
+		$(window).on('deviceorientation', handleOrientation);
+		// $(window).on('deviceorientation', had2);
+	</script>
+</body>
+</html>
