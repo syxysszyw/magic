@@ -298,3 +298,4 @@ $(function() {
 
 // 改变方向运动的时候加一个延迟
 // 运动会跳，多加水平面以下的运动判断中
+// 需要看的文档 https://github.com/ajfisher/deviceapi-normaliser#readme
