@@ -58,7 +58,7 @@ $(function(){
     function readAsBinaryString(){
         var file = $file[0].files[0];
         if(!/image\/\w+/.test(file.type)){  
-            alert("只能选择图片当背影哦");  
+            alert("只能选择图片当背景哦");  
             return false;  
         }  
         var reader = new FileReader();  
@@ -71,46 +71,46 @@ $(function(){
     }
 
 
-var convertImgDataToBlob = function (base64Data) {
-    var format = "image/jpeg";
-    var base64 = base64Data;
-    var code = window.atob(base64.split(",")[1]);
-    var aBuffer = new window.ArrayBuffer(code.length);
-    var uBuffer = new window.Uint8Array(aBuffer);
-    for(var i = 0; i < code.length; i++){
-        uBuffer[i] = code.charCodeAt(i) & 0xff ;
-    }
-    console.info([aBuffer]);
-    console.info(uBuffer);
-    console.info(uBuffer.buffer);
-    console.info(uBuffer.buffer==aBuffer); //true
-
-    var blob=null;
-    try{
-        blob = new Blob([uBuffer], {type : format});
-    }
-    catch(e){
-        window.BlobBuilder = window.BlobBuilder ||
-        window.WebKitBlobBuilder ||
-        window.MozBlobBuilder ||
-        window.MSBlobBuilder;
-        if(e.name == 'TypeError' && window.BlobBuilder){
-            var bb = new window.BlobBuilder();
-            bb.append(uBuffer.buffer);
-            blob = bb.getBlob("image/jpeg");
-
+    function convertImgDataToBlob (base64Data) {
+        var format = "image/jpeg";
+        var base64 = base64Data;
+        var code = window.atob(base64.split(",")[1]);
+        var aBuffer = new window.ArrayBuffer(code.length);
+        var uBuffer = new window.Uint8Array(aBuffer);
+        for(var i = 0; i < code.length; i++){
+            uBuffer[i] = code.charCodeAt(i) & 0xff ;
         }
-        else if(e.name == "InvalidStateError"){
-            blob = new Blob([aBuffer], {type : format});
-        }
-        else{
+        console.info([aBuffer]);
+        console.info(uBuffer);
+        console.info(uBuffer.buffer);
+        console.info(uBuffer.buffer==aBuffer); //true
 
+        var blob=null;
+        try{
+            blob = new Blob([uBuffer], {type : format});
         }
-    }
-    alert(blob.size);
-    return blob;
-   
-};
+        catch(e){
+            window.BlobBuilder = window.BlobBuilder ||
+            window.WebKitBlobBuilder ||
+            window.MozBlobBuilder ||
+            window.MSBlobBuilder;
+            if(e.name == 'TypeError' && window.BlobBuilder){
+                var bb = new window.BlobBuilder();
+                bb.append(uBuffer.buffer);
+                blob = bb.getBlob("image/jpeg");
+
+            }
+            else if(e.name == "InvalidStateError"){
+                blob = new Blob([aBuffer], {type : format});
+            }
+            else{
+
+            }
+        }
+        alert(blob.size);
+        return blob;
+       
+    };
 
     /* 摇一摇 */
     /* http://www.360doc.com/content/13/0222/23/11625720_267350198.shtml */
@@ -118,8 +118,34 @@ var convertImgDataToBlob = function (base64Data) {
     var x = y = z = last_x = last_y = last_z = 0;
 
     // 一开始$prop隐藏，此时无法获取 $prop 的宽和高，所以应该在 $prop show()的时候获取宽高值。
-    var propW = 350;
-    var propH = 310;
+
+    var propRealW, 
+        propRealH;
+
+    getPropSize();
+    // 获取一张照片的size  http://q.cnblogs.com/q/66161/
+    function getPropSize() {
+        var img = new Image;    
+
+        img.onload = function() {
+            propRealW = img.width;
+            propRealH = img.height;
+
+            console.log(propRealW);
+            console.log(propRealH);
+        };    
+
+        img.src = "../prop.png";
+
+    }
+
+    var propW = parseInt($('.prop img').css('width'), 10);
+    var propH = propRealH * propW / propRealW;
+
+    console.log(propW);
+    console.log(propH);
+
+
     var propHalfW;
     var propHalfH;
 
@@ -280,10 +306,6 @@ var convertImgDataToBlob = function (base64Data) {
         // beta   0- 90   往下掉; -90-0  往上掉
         // gamma  0-90   往右掉; -90-0  往左掉
 
-        // to = setTimeout(function() {
-        //     render();
-        //     update(beta, gamma);
-        // }, 50);
 
         // 前提是用户允许横竖屏切换
         // window.orientation == 90  向左横屏
@@ -291,7 +313,6 @@ var convertImgDataToBlob = function (base64Data) {
 
         requestAnimationFrame(function() {
             render();
-            // update(beta, gamma);
             update(evt);
         });
     }
@@ -303,16 +324,37 @@ var convertImgDataToBlob = function (base64Data) {
         })
     }
 
+    // gamma  向左转一圈 0~-90, 90~0, 0~-90，90~0 会有一个“-90 到 90” 的瞬间变化，一直是在减小的过程 
+    // 整体加90  向左转一圈 90~0, 180~90, 90~0，180~90 会有一个“0 到 180” 的瞬间变化，一直是在减小的过程 
+
+    // gamma  向右转一圈 0~90, -90~0, 0~90，-90~0 会有一个“180 到 0” 的瞬间变化，一直是在增大的过程
+    // 整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程
 
     var lastBeta = 0,
         currentBeta = 0,
         lastGamma = 0,
         currentGamma = 0;
 
+
     function update(evt) {
 
         currentBeta = evt.beta;
         currentGamma = evt.gamma;
+
+
+        // 判断突变 如果
+        if(Math.abs(currentGamma - lastGamma) >= 80) {
+            currentGamma = 0 - currentGamma;  
+            $('.consoledataa').html(currentGamma);
+        }
+
+        // if(Math.abs(currentGamma - lastGamma) <= 2 || Math.abs(currentBeta - lastBeta) <= 2) {
+        //     return;
+        // }
+
+        // 判断偏移的幅度，如果相差太小则不认为是用户希望抖动
+        // if(currentGamma > lastGamma)
+
 
         var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
         // var absGamma = Math.abs(currentGamma);
@@ -320,13 +362,13 @@ var convertImgDataToBlob = function (base64Data) {
         var betaDirection = currentBeta >= 0 ? 1 : -1;
         // var gammaDirection = currentGamma > lastGamma ? 1 : -1;
 
-        pvy = absBeta / 90 * betaDirection * 20;
+        pvy = absBeta / 90 * betaDirection * 30;
         // pvx = absGamma / 90 * gammaDirection * 20;
-        pvx = currentGamma / 90 * 20;
+        pvx = currentGamma / 90 * 30;
 
-        propL += pvx;
         propT += pvy;
-
+        propL += pvx;
+        
         if(propL < 0 ){
             propL = 0;
         }else if(propL > maxOffsetL) {
@@ -340,7 +382,13 @@ var convertImgDataToBlob = function (base64Data) {
         }
 
         lastBeta = currentBeta;
-        lastGamma = currentGamma;
+        // if(Math.abs(currentGamma - lastGamma) >= 90) {
+        //     lastGamma = -currentGamma
+        // }else {
+            lastGamma = currentGamma;
+        // }
+
+        $('.consoledatab').html(lastGamma);
 
     }
 
