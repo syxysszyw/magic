@@ -43,7 +43,6 @@ $(function() {
     var propVx = 0,
         propVy = 0;
 
-    // var to ;
     window.requestAnimationFrame = window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -94,7 +93,7 @@ $(function() {
             maxOffsetT = windowH - propH;
         };
 
-        img.src = "../prop.png";
+        img.src = "./prop.png";
     }
 
     function deviceMotionHandler(eventData) {
@@ -159,6 +158,7 @@ $(function() {
 
         propVy = absBeta / 90 * betaDirection * 30;
         propVx = currentGamma / 90 * 30;
+        console.log(propVx);
 
         propTop += propVy;
         propLeft += propVx;
@@ -218,7 +218,7 @@ $(function() {
     /* 拖动 */
     $prop.on('touchstart', function(event) {
 
-        $(window).off('deviceorientation', handleOrientation);
+        $(window).off('deviceorientation');
 
         if (event.targetTouches.length == 1) {
 
@@ -264,6 +264,20 @@ $(function() {
         // 如果 touchend 的时候手指处于屏幕边缘（正负20范围），才让图片消失
         if (leaveTouchPageX <= 20 || leaveTouchPageX >= windowW - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
             $prop.hide('slow');
+            // 重置相关变量
+            $(window).off('deviceorientation');
+            propVx = 0;
+            propVy = 0;
+            lastBeta = 0;
+            currentBeta = 0;
+            lastGamma = 0;
+            currentGamma = 0;
+            last_x = 0;
+            current_x = 0;
+            last_y = 0;
+            current_y = 0;
+            last_z = 0;
+            current_z = 0;
         }
 
         // var currentL = parseInt($prop.css('left'), 10);
