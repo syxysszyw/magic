@@ -19,6 +19,7 @@ $(function() {
 
     /* prop相关 */
     var propW, propH;
+    var propPath = './prop.png';
 
     /* 三击 */
     var clickCount = 0,
@@ -76,11 +77,15 @@ $(function() {
             localStorage.setItem('defaultBg', this.result);
             $btn.hide();
 
+            var img = new Image();
+            img.src = this.result;
+            // console.log(encodeURIComponent(this.result));
+
         };
     }
 
     /* 获取img真实尺寸  http://q.cnblogs.com/q/66161/ */
-    function getPropSize() {
+    function getPropSize(imgPath) {
         var img = new Image();
         var propRealW, propRealH;
 
@@ -93,13 +98,14 @@ $(function() {
             maxOffsetT = windowH - propH;
         };
 
-        img.src = "./prop.png";
+        // img.src = "./prop.png";
+        img.src = imgPath;
     }
 
+    // 每时每刻都在进行
     function deviceMotionHandler(eventData) {
         var acceleration = eventData.accelerationIncludingGravity;
         var curTime = new Date().getTime();
-
         if ((curTime - last_update) > 100) {
             var diffTime = curTime - last_update;
             last_update = curTime;
@@ -109,6 +115,7 @@ $(function() {
             var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
 
             if (speed > 2000 && $prop.css('display') !== 'block') {
+                console.log(speed);
                 // alert("摇动了");
                 $prop.show().css({
                     'top': '0px',
@@ -158,7 +165,6 @@ $(function() {
 
         propVy = absBeta / 90 * betaDirection * 30;
         propVx = currentGamma / 90 * 30;
-        console.log(propVx);
 
         propTop += propVy;
         propLeft += propVx;
@@ -213,7 +219,7 @@ $(function() {
         readAsDataURL();
     });
 
-    getPropSize();
+    getPropSize(propPath);
 
     /* 拖动 */
     $prop.on('touchstart', function(event) {
