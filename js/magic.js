@@ -29,8 +29,15 @@ $(function() {
     var propLeft = parseInt($prop.css('left')),
         propTop = parseInt($prop.css('top'));
 
+    // window
     var windowW = $(window).width(),
-        windowH = $(window).height();
+        windowH = $(window).height(),
+        windowWidthHeightRatio = windowW / windowH;
+
+    // gameContainer
+    var gameContainerWidthHeightRatio;
+
+    var strechDirection;
 
     var maxOffsetL, maxOffsetT;
 
@@ -49,15 +56,32 @@ $(function() {
         window.webkitRequestAnimationFrame ||
         window.msRequestAnimationFrame;
 
-    function setGameBackground(container, result) {
-        /* 用img */
-        $gameContainer.html('<img src="' + result + '" alt="" />');
+    var useImgAsBackground = true;
+
+    function setGameContainerBackground(container, result, useImg) {
+        if(useImg) {
+            /* 用img */
+            $gameContainer.html('<img src="' + result + '" alt="" />');
+            if(localStorage.getItem('strechDirection')) {
+                $gameContainer.find('img').css({
+                    'height': 'auto',
+                    'width': '100%'
+                });
+            }
+        }
+        
 
         /* 用background-image */
         // container.css({
         //     'background-image': 'url(' + result + ')'
         // })
     }
+
+    // function setBackgroundToFullScreen(windowRatio, backgroundRatio) {
+    //     if(windowRatio < backgroundRatio) {
+
+    //     }
+    // }
 
     function readAsDataURL() {
         //检验是否为图像文件  
@@ -73,14 +97,32 @@ $(function() {
         reader.readAsDataURL(file);
         reader.onload = function() {
 
-            setGameBackground($gameContainer, this.result);
+            setGameContainerBackground($gameContainer, this.result, useImgAsBackground);
             localStorage.setItem('defaultBg', this.result);
             $btn.hide();
 
             var img = new Image();
-            img.src = this.result;
-            // console.log(encodeURIComponent(this.result));
+            img.onload = function() {
+                gameContainerWidthHeightRatio = img.width / img.height;
+                if(gameContainerWidthHeightRatio < windowWidthHeightRatio) {
+                    // 图片的长/宽比 小于    屏幕的长宽比，strechDirection为1， 表示要把图片的宽拉伸至屏幕宽度
+                    // 图片的长/宽比 大于等于 屏幕的长宽比，strechDirection为0， 表示要把图片的高拉伸到屏幕高度
+                    // strechDirection = gameContainerWidthHeightRatio < windowWidthHeightRatio ? 1 : 0;
 
+                    // 缩放宽度
+                    // 缩放宽度
+                    // 缩放宽度
+                    localStorage.setItem('strechDirection', 1);
+                    console.log('缩放宽度');
+                } else {
+                    // 缩放高度
+                    // 缩放高度
+                    // 缩放高度
+                    localStorage.setItem('strechDirection', 0);
+                    console.log('缩放高度');
+                }
+            }
+            img.src = this.result;
         };
     }
 
@@ -98,7 +140,6 @@ $(function() {
             maxOffsetT = windowH - propH;
         };
 
-        // img.src = "./prop.png";
         img.src = imgPath;
     }
 
@@ -200,13 +241,27 @@ $(function() {
     }
 
 
+
+    // alert(window.screen.availWidth * window.devicePixelRatio);
+    // alert(window.screen.availHeight * window.devicePixelRatio);
+    
+    alert('availHeight ' + window.screen.availHeight);
+    alert('innerHeight ' + window.innerHeight);
+    alert('clientHeight ' + document.body.clientHeight);
+    alert('offsetHeight ' + document.body.offsetHeight);
+    alert('scrollHeight ' + document.body.scrollHeight);
+
     /* 启动全屏 */
     launchFullscreen(document.documentElement); // 整个网页
     launchFullscreen(document.getElementById('game-container')); // 某个页面元素
 
+    // if(!localStorage.windowRatio) {
+    //     localStorage.setItem('windowRatio', windowWidthHeightRatio);
+    // }
+
     if (localStorage.defaultBg) {
         $btn.hide();
-        setGameBackground($gameContainer, localStorage.defaultBg);
+        setGameContainerBackground($gameContainer, localStorage.defaultBg, useImgAsBackground);
     }
 
     if (window.DeviceMotionEvent) {

@@ -1,12 +1,14 @@
 * {
     padding: 0;
     margin: 0;
-}
-
-img {
     -webkit-user-select: none;
     user-select: none;
 }
+
+// img {
+//     -webkit-user-select: none;
+//     user-select: none;
+// }
 
 .weui_uploader_input_wrp {
     position: absolute;
@@ -77,9 +79,10 @@ img {
 #game-container img {
     position: absolute;
     height: 100%;
+    // width: 100%;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 0;
+    transform: translateX(-50%);
     vertical-align: bottom;
 }
 
