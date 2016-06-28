@@ -288,6 +288,10 @@ $(function() {
         alert('not support mobile event');
     }
 
+    if (!window.DeviceOrientationEvent) {
+        alert('not support mobile event');
+    }
+
     $file.on('change', function() {
         readAsDataURL();
     });
