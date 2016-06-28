@@ -34,6 +34,12 @@ $(function() {
         windowH = $(window).height(),
         windowWidthHeightRatio = windowW / windowH;
 
+    var scrollWidth = document.body.scrollWidth;     // 375
+    var scrollHeight = document.body.scrollHeight;   // 559
+
+    // alert(scrollWidth)
+    // alert(scrollHeight)
+
     // gameContainer
     var gameContainerWidthHeightRatio;
 
@@ -114,6 +120,10 @@ $(function() {
                     // 缩放宽度
                     localStorage.setItem('strechDirection', 1);
                     console.log('缩放宽度');
+                    $gameContainer.find('img').css({
+                        'height': 'auto',
+                        'width': '100%'
+                    });
                 } else {
                     // 缩放高度
                     // 缩放高度
@@ -162,8 +172,12 @@ $(function() {
                     'top': '0px',
                     'left': '0px'
                 });
+                propVx = 0;
+                propVy = 0;
 
                 $(window).on('deviceorientation', handleOrientation);
+                console.log('propVx', propVx)
+                console.log('propVy', propVy)
             }
             last_x = current_x;
             last_y = current_y;
@@ -204,22 +218,26 @@ $(function() {
             // $('.consoledataa').html(currentGamma);
         }
 
-        propVy = absBeta / 90 * betaDirection * 30;
-        propVx = currentGamma / 90 * 30;
+        propVy = absBeta / 90 * betaDirection * 40;
+        propVx = currentGamma / 90 * 40;
 
         propTop += propVy;
         propLeft += propVx;
 
         if (propLeft < 0) {
             propLeft = 0;
+            propVx = 0;
         } else if (propLeft > maxOffsetL) {
             propLeft = maxOffsetL;
+            propVx = 0;
         }
 
         if (propTop < 0) {
             propTop = 0;
+            propVy = 0;
         } else if (propTop > maxOffsetT) {
             propTop = maxOffsetT;
+            propVy = 0;
         }
 
         lastBeta = currentBeta;
@@ -244,12 +262,12 @@ $(function() {
 
     // alert(window.screen.availWidth * window.devicePixelRatio);
     // alert(window.screen.availHeight * window.devicePixelRatio);
-    
-    alert('availHeight ' + window.screen.availHeight);
-    alert('innerHeight ' + window.innerHeight);
-    alert('clientHeight ' + document.body.clientHeight);
-    alert('offsetHeight ' + document.body.offsetHeight);
-    alert('scrollHeight ' + document.body.scrollHeight);
+
+    // alert('availHeight ' + window.screen.availHeight);
+    // alert('innerHeight ' + window.innerHeight);
+    // alert('clientHeight ' + document.body.clientHeight);
+    // alert('offsetHeight ' + document.body.offsetHeight);
+    // alert('scrollHeight ' + document.body.scrollHeight);
 
     /* 启动全屏 */
     launchFullscreen(document.documentElement); // 整个网页
@@ -311,6 +329,26 @@ $(function() {
                 'top': propTop + 'px'
 
             });
+
+            if(touch.pageY <= 20){
+                $prop.hide('slow');
+                console.log('touchmove, leaveTouchPageY ' + touch.pageY);
+                // 重置相关变量
+                $(window).off('deviceorientation');
+                propVx = 0;
+                propVy = 0;
+                console.log('touchmove, propVy ' +propVy);
+                lastBeta = 0;
+                currentBeta = 0;
+                lastGamma = 0;
+                currentGamma = 0;
+                last_x = 0;
+                current_x = 0;
+                last_y = 0;
+                current_y = 0;
+                last_z = 0;
+                current_z = 0;
+            }
         }
 
     }).on('touchend', function() {
@@ -323,7 +361,8 @@ $(function() {
 
         /* 边界判断 */
         // 如果 touchend 的时候手指处于屏幕边缘（正负20范围），才让图片消失
-        if (leaveTouchPageX <= 20 || leaveTouchPageX >= windowW - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
+        // if (leaveTouchPageX <= 20 || leaveTouchPageX >= windowW - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
+        if (leaveTouchPageX <= 20 || leaveTouchPageX >= scrollWidth - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= scrollHeight - 20) {
             $prop.hide('slow');
             // 重置相关变量
             $(window).off('deviceorientation');
