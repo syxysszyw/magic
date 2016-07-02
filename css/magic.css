@@ -81,6 +81,7 @@ img {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    -webkit-backface-visibility: hidden;
 }
 
 #game-container img {
@@ -93,16 +94,22 @@ img {
     transform: translateX(-50%);
     vertical-align: bottom;
 }
-
 .prop {
     position: absolute;
-    left: 0;
-    top: 0;
+    // left: 0;
+    // top: 0;
     display: none;
     z-index: 100;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     transform-origin: 0 0;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;  
 }
 
 .prop img {

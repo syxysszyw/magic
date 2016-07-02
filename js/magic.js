@@ -6,7 +6,7 @@ $(function() {
     var $gameContainer = $("#game-container");
     var $file = $("#file");
     var $prop = $('.prop');
-    var $btn = $('.weui_uploader_input_wrp');
+    var $uploadBtn = $('.weui_uploader_input_wrp');
 
     /* 摇一摇 */
     var last_update = 0;
@@ -19,15 +19,15 @@ $(function() {
 
     /* prop相关 */
     var propW, propH;
-    var propPath = './prop.png';
+    var propPath = './images/prop.png';
 
     /* 三击 */
     var clickCount = 0,
         clickTimer;
 
     /* 拖动 */
-    var propLeft = parseInt($prop.css('left')),
-        propTop = parseInt($prop.css('top'));
+    var propLeft = 0,
+        propTop = 0;
 
     // window
     var windowW = $(window).width(),
@@ -37,8 +37,6 @@ $(function() {
     var scrollWidth = document.body.scrollWidth;     // 375
     var scrollHeight = document.body.scrollHeight;   // 559
 
-    // alert(scrollWidth)
-    // alert(scrollHeight)
 
     // gameContainer
     var gameContainerWidthHeightRatio;
@@ -57,11 +55,6 @@ $(function() {
     var propVx = 0,
         propVy = 0;
 
-    window.requestAnimationFrame = window.requestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.msRequestAnimationFrame;
-
     var useImgAsBackground = true;
 
     function setGameContainerBackground(container, result, useImg) {
@@ -75,19 +68,7 @@ $(function() {
                 });
             }
         }
-        
-
-        /* 用background-image */
-        // container.css({
-        //     'background-image': 'url(' + result + ')'
-        // })
     }
-
-    // function setBackgroundToFullScreen(windowRatio, backgroundRatio) {
-    //     if(windowRatio < backgroundRatio) {
-
-    //     }
-    // }
 
     function readAsDataURL() {
         //检验是否为图像文件  
@@ -103,9 +84,10 @@ $(function() {
         reader.readAsDataURL(file);
         reader.onload = function() {
 
+
             setGameContainerBackground($gameContainer, this.result, useImgAsBackground);
             localStorage.setItem('defaultBg', this.result);
-            $btn.hide();
+            $uploadBtn.remove();
 
             var img = new Image();
             img.onload = function() {
@@ -119,7 +101,6 @@ $(function() {
                     // 缩放宽度
                     // 缩放宽度
                     localStorage.setItem('strechDirection', 1);
-                    console.log('缩放宽度');
                     $gameContainer.find('img').css({
                         'height': 'auto',
                         'width': '100%'
@@ -129,7 +110,6 @@ $(function() {
                     // 缩放高度
                     // 缩放高度
                     localStorage.setItem('strechDirection', 0);
-                    console.log('缩放高度');
                 }
             }
             img.src = this.result;
@@ -167,17 +147,16 @@ $(function() {
 
             if (speed > 2000 && $prop.css('display') !== 'block') {
                 console.log(speed);
-                // alert("摇动了");
+                // alert("摇到了");
                 $prop.show().css({
-                    'top': '0px',
-                    'left': '0px'
+                    '-webkit-transform': 'translate3d(0, 0, 0)',
+                    'transform': 'translate3d(0, 0, 0)'
                 });
                 propVx = 0;
                 propVy = 0;
-
                 $(window).on('deviceorientation', handleOrientation);
-                console.log('propVx', propVx)
-                console.log('propVy', propVy)
+                alert('propVx ' + propVx)
+                alert('propVy ' + propVy)
             }
             last_x = current_x;
             last_y = current_y;
@@ -193,9 +172,10 @@ $(function() {
     }
 
     function render() {
+        console.log(propLeft);
         $prop.css({
-            'left': propLeft + 'px',
-            'top': propTop + 'px'
+            '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
+            'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
         });
     }
 
@@ -204,8 +184,9 @@ $(function() {
 
        gamma  向右转一圈 0~90, -90~0, 0~90，-90~0 会有一个“180 到 0” 的瞬间变化，一直是在增大的过程
        整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程  */
-
+    var total = 0;
     function update(evt) {
+        console.log(total++);
         var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
         var betaDirection = currentBeta >= 0 ? 1 : -1;
 
@@ -242,7 +223,6 @@ $(function() {
 
         lastBeta = currentBeta;
         lastGamma = currentGamma;
-        // $('.consoledatab').html(lastGamma);
     }
 
     /* 全屏 */
@@ -278,7 +258,8 @@ $(function() {
     // }
 
     if (localStorage.defaultBg) {
-        $btn.hide();
+        // $uploadBtn.hide();
+        $uploadBtn.remove();
         setGameContainerBackground($gameContainer, localStorage.defaultBg, useImgAsBackground);
     }
 
@@ -312,9 +293,6 @@ $(function() {
         }
 
     }).on('touchmove', function(event) {
-        // console.log('touches', event.touches);
-        // console.log('targetTouches', event.targetTouches);
-        // console.log('changeTouches', event.changeTouches);
 
         event.preventDefault(); //阻止其他事件
 
@@ -327,21 +305,16 @@ $(function() {
             propTop = touch.pageY - propOffsetT;
 
             $prop.css({
-                // 'left': touch.pageX - propOffsetL + 'px',
-                // 'top': touch.pageY - propOffsetT + 'px'
-                'left': propLeft + 'px',
-                'top': propTop + 'px'
-
+                '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
+                'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
             });
 
             if(touch.pageY <= 20){
                 $prop.hide('slow');
-                console.log('touchmove, leaveTouchPageY ' + touch.pageY);
                 // 重置相关变量
                 $(window).off('deviceorientation');
                 propVx = 0;
                 propVy = 0;
-                console.log('touchmove, propVy ' +propVy);
                 lastBeta = 0;
                 currentBeta = 0;
                 lastGamma = 0;
@@ -407,7 +380,9 @@ $(function() {
         } else if (clickCount === 2) {
             clickCount = 0;
             clearTimeout(clickTimer);
-            $file.trigger('click');
+            if(!$uploadBtn.length){
+                $file.trigger('click');
+            }
         }
     });
 

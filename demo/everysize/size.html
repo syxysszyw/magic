@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>size</title>
+    <style type="text/css">
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        html {
+            background-color: rgba(255, 0, 0, .3);
+            margin: 4px;
+        }
+        body {
+            background-color: rgba(0, 255, 0, .3);
+            margin: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>avail-*</h2>
+    <div class="availWidth"></div>
+    <div class="availHeight"></div>
+
+    <h2>inner-*</h2>
+    <div class="innerWidth"></div>
+    <div class="innerHeight"></div>
+
+    <h2>client-*</h2>
+    <div class="clientWidth"></div>
+    <div class="clientHeight"></div>
+
+    <h2>offset-*</h2>
+    <div class="offsetWidth"></div>
+    <div class="offsetHeight"></div>
+
+    <h2>scroll-*</h2>
+    <div class="scrollWidth"></div>
+    <div class="scrollHeight"></div>
+
+    <script type="text/javascript">
+        document.querySelector('.availWidth').innerHTML= 'availWidth: ' + window.screen.availWidth + 'px';
+        document.querySelector('.availHeight').innerHTML= 'availHeight: ' + window.screen.availHeight + 'px';
+
+        document.querySelector('.innerWidth').innerHTML= 'innerWidth: ' + window.innerWidth+ 'px';
+        document.querySelector('.innerHeight').innerHTML= 'innerHeight: ' + window.innerHeight + 'px';
+
+
+        document.querySelector('.clientWidth').innerHTML= 'clientWidth: ' + document.body.clientWidth + 'px';
+        document.querySelector('.clientHeight').innerHTML= 'clientHeight: ' + document.body.clientHeight + 'px';
+
+
+        document.querySelector('.offsetWidth').innerHTML= 'offsetWidth: ' + document.body.offsetWidth + 'px';
+        document.querySelector('.offsetHeight').innerHTML= 'offsetHeight: ' + document.body.offsetHeight + 'px';
+
+        document.querySelector('.scrollWidth').innerHTML= 'scrollWidth: ' + document.body.scrollWidth + 'px';
+        document.querySelector('.scrollHeight').innerHTML= 'scrollHeight: ' + document.body.scrollHeight + 'px';
+    </script>
+</body>
+</html>
+
