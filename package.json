@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/syxysszyw/magic#readme",
   "devDependencies": {
+    "browser-sync": "^2.13.0",
     "grunt-browser-sync": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",

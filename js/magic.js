@@ -16,6 +16,7 @@ $(function() {
         last_x = 0,
         last_y = 0,
         last_z = 0;
+    var limitedSpead = 2000;
 
     /* prop相关 */
     var propW, propH;
@@ -145,9 +146,26 @@ $(function() {
             current_z = acceleration.z;
             var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
 
-            if (speed > 2000 && $prop.css('display') !== 'block') {
-                console.log(speed);
+            // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
+            //     console.log('yes');
+            //     if ($prop.css('display') !== 'block') {
+            //         $prop.show().css({
+            //             '-webkit-transform': 'translate3d(0, 0, 0)',
+            //             'transform': 'translate3d(0, 0, 0)'
+            //         });
+            //         propVx = 0;
+            //         propVy = 0;
+            //         $(window).on('deviceorientation', handleOrientation);
+            //     }
+            // }
+            if (speed > limitedSpead && $prop.css('display') !== 'block') {
+                // console.log(speed);
                 // alert("摇到了");
+                console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
+                console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
+                console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
+
+                localStorage
                 $prop.show().css({
                     '-webkit-transform': 'translate3d(0, 0, 0)',
                     'transform': 'translate3d(0, 0, 0)'
@@ -155,8 +173,6 @@ $(function() {
                 propVx = 0;
                 propVy = 0;
                 $(window).on('deviceorientation', handleOrientation);
-                alert('propVx ' + propVx)
-                alert('propVy ' + propVy)
             }
             last_x = current_x;
             last_y = current_y;
@@ -164,7 +180,9 @@ $(function() {
         }
     }
 
+    var count = 0;
     function handleOrientation(evt) {
+        console.log('count', count++)
         requestAnimationFrame(function() {
             render();
             update(evt);
@@ -172,7 +190,6 @@ $(function() {
     }
 
     function render() {
-        console.log(propLeft);
         $prop.css({
             '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
             'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
@@ -186,7 +203,6 @@ $(function() {
        整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程  */
     var total = 0;
     function update(evt) {
-        console.log(total++);
         var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
         var betaDirection = currentBeta >= 0 ? 1 : -1;
 
@@ -298,6 +314,9 @@ $(function() {
 
         // 如果这个元素的位置内只有一个手指的话
         if (event.targetTouches.length == 1) {
+
+
+            // console.log('total', total++);
 
             var touch = event.targetTouches[0]; // 把元素放在手指所在的位置
 
