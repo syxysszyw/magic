@@ -49,7 +49,10 @@ gulp.task('clean', function() {
 gulp.task('deploy', ['copy'], function() {
     return gulp.src('dist/**/*')
         .pipe(ftp({
-            
+            host: 'demo.cdc.im',
+            user: 'mode',
+            pass: '',
+            remotePath: '/domains/demo.cdc.im/public_html/emma/magicdeploy'
         }))
         // you need to have some kind of stream after gulp-ftp to make sure it's flushed 
         // this can be a gulp plugin, gulp.dest, or any kind of stream 

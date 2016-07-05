@@ -37,7 +37,7 @@ $(function() {
 
     var scrollWidth = document.body.scrollWidth;     // 375
     var scrollHeight = document.body.scrollHeight;   // 559
-    var raf;
+
 
     // gameContainer
     var gameContainerWidthHeightRatio;
@@ -55,12 +55,6 @@ $(function() {
 
     var propVx = 0,
         propVy = 0;
-
-    var times = 0;
-    var target = {
-        x : 0,
-        y : 0
-    }
 
     var useImgAsBackground = true;
 
@@ -150,8 +144,7 @@ $(function() {
             current_x = acceleration.x;
             current_y = acceleration.y;
             current_z = acceleration.z;
-            // var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
-            // var speed = Math.abs(current_x - last_x)  / diffTime * 10000 || Math.abs(current_y - last_y)  / diffTime * 10000 || Math.abs(current_z - last_z)  / diffTime * 10000 > spead;
+            var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
 
             // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
             //     console.log('yes');
@@ -165,28 +158,21 @@ $(function() {
             //         $(window).on('deviceorientation', handleOrientation);
             //     }
             // }
-            if (Math.abs(current_x - last_x)  / diffTime * 10000 > limitedSpead || Math.abs(current_y - last_y)  / diffTime * 10000 > limitedSpead || Math.abs(current_z - last_z)  / diffTime * 10000 > limitedSpead ) {
-                if($prop.css('display') !== 'block') {
-                    // console.log(speed);
-                    // alert("摇到了");
-                    console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
-                    console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
-                    console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
-                    
-                    update();
-                    propVx = 0;
-                    propVy = 0;
+            if (speed > limitedSpead && $prop.css('display') !== 'block') {
+                // console.log(speed);
+                // alert("摇到了");
+                console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
+                console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
+                console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
 
-                    $prop.show().css({
-                        '-webkit-transform': 'translate3d(0, 0, 0)',
-                        'transform': 'translate3d(0, 0, 0)'
-                    });
-
-                    console.log(propVx);
-                    console.log(propVy);
-
-                    $(window).on('deviceorientation', handleOrientation);
-                }
+                localStorage
+                $prop.show().css({
+                    '-webkit-transform': 'translate3d(0, 0, 0)',
+                    'transform': 'translate3d(0, 0, 0)'
+                });
+                propVx = 0;
+                propVy = 0;
+                $(window).on('deviceorientation', handleOrientation);
             }
             last_x = current_x;
             last_y = current_y;
@@ -195,13 +181,25 @@ $(function() {
     }
 
     var count = 0;
+    
+    var target = {
+        beta: 0,
+        gamma: 0
+    }
+    var initialVelocity = 40;
+    var requestId;
+
     function handleOrientation(evt) {
         target = {
-            x: evt.beta,
-            y: evt.gamma
+            beta: evt.beta,
+            gamma: evt.gamma
         }
-    }
+        // target.beta = evt.beta;
+        // target.gamma = evt.gamma;
 
+        update(target);
+        // render();
+    }
 
     /* gamma  向左转一圈 0~-90, 90~0, 0~-90，90~0 会有一个“-90 到 90” 的瞬间变化，一直是在减小的过程 
        整体加90  向左转一圈 90~0, 180~90, 90~0，180~90 会有一个“0 到 180” 的瞬间变化，一直是在减小的过程 
@@ -209,22 +207,28 @@ $(function() {
        gamma  向右转一圈 0~90, -90~0, 0~90，-90~0 会有一个“180 到 0” 的瞬间变化，一直是在增大的过程
        整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程  */
     var total = 0;
-    function update(evt) {
 
-        currentBeta = target.x; // [-180, 180]
-        currentGamma = target.y; // [-90, 90]
+    function update(target) {
 
         var absBeta = Math.abs(currentBeta) <= 90 ? Math.abs(currentBeta) : 180 - Math.abs(currentBeta);
         var betaDirection = currentBeta >= 0 ? 1 : -1;
 
+        $prop.css({
+            '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
+            'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
+        });
+        
+        currentBeta = target['beta']; // [-180, 180]
+        currentGamma = target['gamma']; // [-90, 90]]
+
+
         // 判断突变
         if (Math.abs(currentGamma - lastGamma) >= 80) {
             currentGamma = 0 - currentGamma;
-            // $('.consoledataa').html(currentGamma);
         }
 
-        propVy = absBeta / 90 * betaDirection * 40;
-        propVx = currentGamma / 90 * 40;
+        propVy = absBeta / 90 * betaDirection * initialVelocity;
+        propVx = currentGamma / 90 * initialVelocity;
 
         propTop += propVy;
         propLeft += propVx;
@@ -256,13 +260,10 @@ $(function() {
             'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
         });
 
-
         lastBeta = currentBeta;
         lastGamma = currentGamma;
 
-
-        raf = requestAnimationFrame(update);
-
+        requestId = requestAnimationFrame(update);
     }
 
     /* 全屏 */
@@ -292,7 +293,7 @@ $(function() {
     /* 启动全屏 */
     launchFullscreen(document.documentElement); // 整个网页
     launchFullscreen(document.getElementById('game-container')); // 某个页面元素
-    
+    update();
 
     // if(!localStorage.windowRatio) {
     //     localStorage.setItem('windowRatio', windowWidthHeightRatio);
@@ -324,7 +325,6 @@ $(function() {
     $prop.on('touchstart', function(event) {
 
         $(window).off('deviceorientation');
-        cancelAnimationFrame(raf);
 
         if (event.targetTouches.length == 1) {
 
@@ -377,7 +377,6 @@ $(function() {
 
         // 这个时候已经没有 event.targetTouches了
         $(window).on('deviceorientation', handleOrientation);
-        raf = requestAnimationFrame(update);
 
         var leaveTouchPageX = propOffsetL + $prop.offset().left;
         var leaveTouchPageY = propOffsetT + $prop.offset().top;
@@ -389,8 +388,6 @@ $(function() {
             $prop.hide('slow');
             // 重置相关变量
             $(window).off('deviceorientation');
-            cancelAnimationFrame(raf);
-
             propVx = 0;
             propVy = 0;
             lastBeta = 0;
