@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>MAGIC</title>
+    <title>掌生钱</title>
     <link rel="stylesheet" type="text/css" href="./css/magic.css">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="mobile-web-app-capable" content="yes">
@@ -11,18 +11,40 @@
 
     <!-- 状态栏的值可能为black, default, black-translucent -->
     <!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <!-- web app的放置主屏幕上icon文件路径 -->
     <link rel="apple-touch-icon-precomposed" href="iphone_magic.png" />
     <!-- 设置启动时候的界面 -->
+
+    <!-- iPad retina portrait startup image -->  
+    <!-- <link href="/assets/startup/apple-touch-startup-image-1536x2008.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" rel="apple-touch-startup-image">   -->
+     
+    <!-- iPad retina landscape startup image -->  
+    <!-- <link href="/assets/startup/apple-touch-startup-image-1496x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" rel="apple-touch-startup-image">   -->
+     
+    <!-- iPad non-retina portrait startup image -->  
+    <!-- <link href="/assets/startup/apple-touch-startup-image-768x1004.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: portrait)" rel="apple-touch-startup-image">   -->
+     
+    <!-- iPad non-retina landscape startup image -->  
+    <!-- <link href="/assets/startup/apple-touch-startup-image-748x1024.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: landscape)" rel="apple-touch-startup-image">   -->
+
+    <!-- iPhone -->
+    <!-- <link href="./images/apple-touch-startup-image-320x460.png" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image"> -->
+    <!-- iPhone (Retina) -->
+    <!-- <link href="./images/apple-touch-startup-image-640x920.png" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image"> -->
+    <!-- iPhone 5 -->
+    <!-- <link href="./images/apple-touch-startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image"> -->
+    <!-- iPhone 6/6s -->
+    <!-- <link href="./images/apple-touch-startup-image-750x1294.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image"> -->
+
     <!-- iOS 8 iPhone 6 (portrait) -->
-    <link rel="apple-touch-startup-image" href="/apple-touch-startup-image-750×1294.png" media="(device-width: 375px) and (device-height: 667px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)">
+    <!-- <link rel="apple-touch-startup-image" href="./images/apple-touch-startup-image-750×1294.png" media="(device-width: 375px) and (device-height: 667px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)"> -->
     <!-- iOS 8 iPhone 6 (landscape) -->
-    <link rel="apple-touch-startup-image" href="/apple-touch-startup-image-710x1334.png" media="(device-width: 375px) and (device-height: 667px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)">
+    <!-- <link rel="apple-touch-startup-image" href="apple-touch-startup-image-710x1334.png" media="(device-width: 375px) and (device-height: 667px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)"> -->
     <!-- iOS 8 iPhone 6 Plus (portrait) -->
-    <link rel="apple-touch-startup-image" href="/apple-touch-startup-image-1242×2148.png" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)">
+    <!-- <link rel="apple-touch-startup-image" href="./images/apple-touch-startup-image-1242×2148.png" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)"> -->
     <!-- iOS 8 iPhone 6 Plus (landscape) -->
-    <link rel="apple-touch-startup-image" href="/apple-touch-startup-image-1182x2208.png" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)">
+    <!-- <link rel="apple-touch-startup-image" href="apple-touch-startup-image-1182x2208.png" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)"> -->
 
     <!-- uc强制竖屏 -->
     <meta name="screen-orientation" content="portrait">
@@ -40,20 +62,6 @@
     <meta name="HandheldFriendly" content="true">
     <!-- 微软的老式浏览器 -->
     <meta name="MobileOptimized" content="320">
-    <style type="text/css">
-
-        html, body {
-            height: 100%;
-        }
-        /*.weui_uploader_input_wrp {
-            margin-left: -35px;
-            margin-top: -35px;
-        }*/
-
-        /*#game-container {
-            background-color: blue;
-        }*/
-    </style>
 </head>
 
 <body>
@@ -83,11 +91,6 @@
     <script src="./js/lib/touch.js"></script>
     <!-- <script src="jquery.mobile-1.4.5.min.js"></script> -->
     <script src="./js/magic.js"></script>
-    <script id="__bs_script__">
-    //<![CDATA[
-        document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.2.13.0.js'><\/script>".replace("HOST", location.hostname));
-    //]]>
-    </script>
 </body>
 
 </html>

@@ -64,6 +64,8 @@ $(function() {
 
     var useImgAsBackground = true;
 
+    var clickEvent = (document.ontouchstart!==null) ? 'click' : 'touchstart';
+
     function setGameContainerBackground(container, result, useImg) {
         if(useImg) {
             /* 用img */
@@ -94,7 +96,8 @@ $(function() {
 
             setGameContainerBackground($gameContainer, this.result, useImgAsBackground);
             localStorage.setItem('defaultBg', this.result);
-            $uploadBtn.remove();
+            // $uploadBtn.remove();
+            $uploadBtn.hide();
 
             var img = new Image();
             img.onload = function() {
@@ -145,52 +148,55 @@ $(function() {
         var acceleration = eventData.accelerationIncludingGravity;
         var curTime = new Date().getTime();
         if ((curTime - last_update) > 100) {
-            var diffTime = curTime - last_update;
-            last_update = curTime;
-            current_x = acceleration.x;
-            current_y = acceleration.y;
-            current_z = acceleration.z;
-            // var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
-            // var speed = Math.abs(current_x - last_x)  / diffTime * 10000 || Math.abs(current_y - last_y)  / diffTime * 10000 || Math.abs(current_z - last_z)  / diffTime * 10000 > spead;
+            if($uploadBtn.css('display') !== 'block') {
+                var diffTime = curTime - last_update;
+                last_update = curTime;
+                current_x = acceleration.x;
+                current_y = acceleration.y;
+                current_z = acceleration.z;
+                // var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
+                // var speed = Math.abs(current_x - last_x)  / diffTime * 10000 || Math.abs(current_y - last_y)  / diffTime * 10000 || Math.abs(current_z - last_z)  / diffTime * 10000 > spead;
 
-            // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
-            //     console.log('yes');
-            //     if ($prop.css('display') !== 'block') {
-            //         $prop.show().css({
-            //             '-webkit-transform': 'translate3d(0, 0, 0)',
-            //             'transform': 'translate3d(0, 0, 0)'
-            //         });
-            //         propVx = 0;
-            //         propVy = 0;
-            //         $(window).on('deviceorientation', handleOrientation);
-            //     }
-            // }
-            if (Math.abs(current_x - last_x)  / diffTime * 10000 > limitedSpead || Math.abs(current_y - last_y)  / diffTime * 10000 > limitedSpead || Math.abs(current_z - last_z)  / diffTime * 10000 > limitedSpead ) {
-                if($prop.css('display') !== 'block') {
-                    // console.log(speed);
-                    // alert("摇到了");
-                    console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
-                    console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
-                    console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
-                    
-                    update();
-                    propVx = 0;
-                    propVy = 0;
+                // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
+                //     console.log('yes');
+                //     if ($prop.css('display') !== 'block') {
+                //         $prop.show().css({
+                //             '-webkit-transform': 'translate3d(0, 0, 0)',
+                //             'transform': 'translate3d(0, 0, 0)'
+                //         });
+                //         propVx = 0;
+                //         propVy = 0;
+                //         $(window).on('deviceorientation', handleOrientation);
+                //     }
+                // }
+                if (Math.abs(current_x - last_x)  / diffTime * 10000 > limitedSpead || Math.abs(current_y - last_y)  / diffTime * 10000 > limitedSpead || Math.abs(current_z - last_z)  / diffTime * 10000 > limitedSpead ) {
+                    if($prop.css('display') !== 'block') {
+                        // console.log(speed);
+                        // alert("摇到了");
+                        // console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
+                        // console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
+                        // console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
+                        
+                        update();
+                        propVx = 0;
+                        propVy = 0;
 
-                    $prop.show().css({
-                        '-webkit-transform': 'translate3d(0, 0, 0)',
-                        'transform': 'translate3d(0, 0, 0)'
-                    });
+                        $prop.show().css({
+                            '-webkit-transform': 'translate3d(0, 0, 0)',
+                            'transform': 'translate3d(0, 0, 0)'
+                        });
 
-                    console.log(propVx);
-                    console.log(propVy);
+                        // console.log(propVx);
+                        // console.log(propVy);
 
-                    $(window).on('deviceorientation', handleOrientation);
+                        $(window).on('deviceorientation', handleOrientation);
+                    }
                 }
+                last_x = current_x;
+                last_y = current_y;
+                last_z = current_z;
             }
-            last_x = current_x;
-            last_y = current_y;
-            last_z = current_z;
+            
         }
     }
 
@@ -299,8 +305,8 @@ $(function() {
     // }
 
     if (localStorage.defaultBg) {
-        // $uploadBtn.hide();
-        $uploadBtn.remove();
+        $uploadBtn.hide();
+        // $uploadBtn.remove();
         setGameContainerBackground($gameContainer, localStorage.defaultBg, useImgAsBackground);
     }
 
@@ -336,6 +342,9 @@ $(function() {
 
     }).on('touchmove', function(event) {
 
+        $(window).off('deviceorientation');
+        cancelAnimationFrame(raf);
+        
         event.preventDefault(); //阻止其他事件
 
         // 如果这个元素的位置内只有一个手指的话
@@ -428,9 +437,9 @@ $(function() {
         } else if (clickCount === 2) {
             clickCount = 0;
             clearTimeout(clickTimer);
-            if(!$uploadBtn.length){
-                $file.trigger('click');
-            }
+            // $file.trigger('clickEvent');
+            // console.log(3);
+            return $file.click();
         }
     });
 
