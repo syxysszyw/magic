@@ -304,9 +304,13 @@ $(function() {
     //     localStorage.setItem('windowRatio', windowWidthHeightRatio);
     // }
 
+    $('.intro .close').tap(function() {
+        $('.intro').hide();
+    })
+
     if (localStorage.defaultBg) {
         $uploadBtn.hide();
-        // $uploadBtn.remove();
+        $('.intro').hide();
         setGameContainerBackground($gameContainer, localStorage.defaultBg, useImgAsBackground);
     }
 
