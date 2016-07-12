@@ -65,7 +65,7 @@
 </head>
 
 <body>
-    <div class="intro">
+    <div class="intro" style="display: none;">
         <i class="close"></i>
         <h2>玩法: </h2>
         <p>1. 在 Safari 下打开，然后“添加到主屏幕”</p>
@@ -75,6 +75,7 @@
         <p>3. 设置背景后，摇一摇手机，能看到钱！！！</p>
         <p>4. 拖动钱到屏幕边缘，钱会消失，配合真实的道具可以表演小魔术 :)</p>
         <p>5. 三击屏幕能更换背景图片，切换场景。</p>
+        <a href="javascript:;" class="know">我知道了</a>
     </div>
     <div class="weui_uploader_input_wrp">
         <input id="file" class="weui_uploader_input" type="file" accept="image/jpg,image/jpeg,image/png,image/gif" multiple="">
@@ -84,6 +85,20 @@
     <div class="prop" draggable="true">
         <img src="./images/prop.png" alt="道具">
     </div>
+
+
+    <!-- 切换道具 -->
+    <div class="change-prop">
+        <ul class="prop-name">
+            <li>money</li>
+            <li class="active">poker</li>
+            <li>coin</li>
+        </ul>
+        <div class="prop-thumbnail">
+            <img src="./images/prop.png">
+        </div>
+    </div>
+
     <script src="./js/lib/requestAnimationFrame.js"></script>
     <script src="./js/lib/zepto.min.js"></script>
     <script src="./js/lib/touch.js"></script>
