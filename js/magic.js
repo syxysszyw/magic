@@ -27,8 +27,8 @@ $(function() {
         clickTimer;
 
     /* 拖动 */
-    var propLeft = 0,
-        propTop = 0;
+    var propLeftCornerLeft = 0,
+        propLeftCornerTop = 0;
 
     // window
     var windowW = $(window).width(),
@@ -38,6 +38,7 @@ $(function() {
     var scrollWidth = document.body.scrollWidth;     // 375
     var scrollHeight = document.body.scrollHeight;   // 559
     var raf;
+    var sto;
 
     // gameContainer
     var gameContainerWidthHeightRatio;
@@ -232,34 +233,34 @@ $(function() {
         propVy = absBeta / 90 * betaDirection * 40;
         propVx = currentGamma / 90 * 40;
 
-        propTop += propVy;
-        propLeft += propVx;
+        propLeftCornerTop += propVy;
+        propLeftCornerLeft += propVx;
 
-        if (propLeft < 0) {
-            propLeft = 0;
+        if (propLeftCornerLeft < 0) {
+            propLeftCornerLeft = 0;
             // 速度减为0
             propVx = 0;
 
-        } else if (propLeft > maxOffsetL) {
-            propLeft = maxOffsetL;
+        } else if (propLeftCornerLeft > maxOffsetL) {
+            propLeftCornerLeft = maxOffsetL;
             // 速度减为0
             propVx = 0;
         }
 
-        if (propTop < 0) {
-            propTop = 0;
+        if (propLeftCornerTop < 0) {
+            propLeftCornerTop = 0;
             // 速度减为0
             propVy = 0;
-        } else if (propTop > maxOffsetT) {
-            propTop = maxOffsetT;
+        } else if (propLeftCornerTop > maxOffsetT) {
+            propLeftCornerTop = maxOffsetT;
             // 速度减为0
             propVy = 0;
         }
 
 
         $prop.css({
-            '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
-            'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
+            '-webkit-transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)',
+            'transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)'
         });
 
 
@@ -304,7 +305,7 @@ $(function() {
     //     localStorage.setItem('windowRatio', windowWidthHeightRatio);
     // }
 
-    $('.intro .close').tap(function() {
+    $('.intro .close, .know').tap(function() {
         $('.intro').hide();
     })
 
@@ -330,41 +331,57 @@ $(function() {
 
     getPropSize(propPath);
 
+
+    // var movecount;
+    // var lastmovetime = 0,
+    //     curmovetime = 0;
+
+    var lastTouchX = 0;
+    var lastTouchY = 0;
     /* 拖动 */
     $prop.on('touchstart', function(event) {
-
+        // movecount = 0 ;
         $(window).off('deviceorientation');
         cancelAnimationFrame(raf);
 
         if (event.targetTouches.length == 1) {
-
             var touch = event.targetTouches[0];
-
             propOffsetL = touch.pageX - $prop.offset().left;
             propOffsetT = touch.pageY - $prop.offset().top;
         }
 
     }).on('touchmove', function(event) {
+        // 统计touchmove的次数，如果抽钱抽得很快，次数小（2-3），速度慢则次数多.
+        // movecount++;
+
+        // 经测试，touchmove的触发频率大约是14-20（约16/17ms）执行一次
+        // 不同浏览器上 touchmove 事件的触发频率并不相同。这个触发频率还和硬件设备的性能有关。因此决不能让程序的运作依赖于某个特定的触发频率（via: https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent）
+        // curmovetime = new Date().getTime();
+        // console.log(curmovetime - lastmovetime);
 
         $(window).off('deviceorientation');
         cancelAnimationFrame(raf);
+        // clearTimeout(sto);
         
         event.preventDefault(); //阻止其他事件
-
         // 如果这个元素的位置内只有一个手指的话
         if (event.targetTouches.length == 1) {
-
-
             // console.log('total', total++);
-
             var touch = event.targetTouches[0]; // 把元素放在手指所在的位置
 
-            propLeft = touch.pageX - propOffsetL;
-            propTop = touch.pageY - propOffsetT;
+            lastTouchX = touch.pageX;
+            lastTouchY = touch.pageY;
+
+
+            propLeftCornerLeft = touch.pageX - propOffsetL;
+            propLeftCornerTop = touch.pageY - propOffsetT;
+
+            // console.log('$prop.offset().left', $prop.offset().left);
+            // console.log('propLeftCornerLeft', propLeftCornerLeft);
 
             $prop.css({
-                '-webkit-transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)',
-                'transform': 'translate3d('+ propLeft + 'px, '+ propTop + 'px, 0)'
+                '-webkit-transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)',
+                'transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)'
             });
 
             if(touch.pageY <= 20){
@@ -386,24 +403,46 @@ $(function() {
             }
         }
 
+        // lastmovetime = curmovetime;
+
+    // 当一个触点被用户从触摸平面上移除（当用户将一个手指离开触摸平面）时触发。当触点移出触摸平面的边界时也将触发。例如用户将手指划出屏幕边缘。
     }).on('touchend', function() {
 
-        // 这个时候已经没有 event.targetTouches了
-        $(window).on('deviceorientation', handleOrientation);
-        raf = requestAnimationFrame(update);
+        console.log('lastTouchX', lastTouchX);
+        console.log('lastTouchY', lastTouchY);
+        // alert(movecount);
 
-        var leaveTouchPageX = propOffsetL + $prop.offset().left;
-        var leaveTouchPageY = propOffsetT + $prop.offset().top;
+        /* 如果touchend的时候，只要道具有一点点已经超出边界，则消失
+        if(propLeftCornerLeft < 0 || propLeftCornerTop < 0 || propLeftCornerLeft + propW > scrollWidth || propLeftCornerTop + propH > scrollHeight) {
+            // 消失后应该执行的代码
+        }
+        */
+
+
+
+        /* 这个时候已经没有 event.targetTouches了，如下是计算 touchend 的时候，手指离开的坐标*/
+        // var leaveTouchPageX = propLeftCornerLeft + propOffsetL;
+        // var leaveTouchPageY = propLeftCornerTop + propOffsetT; 
 
         /* 边界判断 */
         // 如果 touchend 的时候手指处于屏幕边缘（正负20范围），才让图片消失
         // if (leaveTouchPageX <= 20 || leaveTouchPageX >= windowW - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= windowH - 20) {
-        if (leaveTouchPageX <= 20 || leaveTouchPageX >= scrollWidth - 20 || leaveTouchPageY <= 20 || leaveTouchPageY >= scrollHeight - 20) {
-            $prop.hide('slow');
+
+        $('#ball').css({
+            '-webkit-transform': 'translate3d('+ lastTouchX + 'px, '+ lastTouchY + 'px, 0)',
+            'transform': 'translate3d('+ lastTouchX + 'px, '+ lastTouchY + 'px, 0)'
+        });
+
+        /* 抽得太快的时候，实际上是没有执行到这段代码，即不符合判断条件 */
+        /* 也就是leaveTouchPageX 和 leaveTouchPageY 其实并不是离开的时候手的真实坐标 */
+        if (lastTouchX <= 50 || lastTouchX >= scrollWidth - 50 || lastTouchY <= 50 || lastTouchY >= scrollHeight - 50) {
+
+            // 道具消失
+            $prop.hide();
+
             // 重置相关变量
             $(window).off('deviceorientation');
             cancelAnimationFrame(raf);
-
             propVx = 0;
             propVy = 0;
             lastBeta = 0;
@@ -417,6 +456,14 @@ $(function() {
             last_z = 0;
             current_z = 0;
         }
+        // sto = setTimeout(function() {
+        $(window).on('deviceorientation', handleOrientation);
+        raf = requestAnimationFrame(update);
+        // }, 200);
+
+        // 这个时候已经没有 event.targetTouches了
+        // $(window).on('deviceorientation', handleOrientation);
+        // raf = requestAnimationFrame(update);
 
         // var currentL = parseInt($prop.css('left'), 10);
         // var currentT = parseInt($prop.css('top'), 10);
