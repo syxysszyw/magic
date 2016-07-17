@@ -6,6 +6,7 @@ $(function() {
     var $gameContainer = $("#game-container");
     var $file = $("#file");
     var $prop = $('.prop');
+    var $propImg = $('.prop img');
     var $uploadBtn = $('.weui_uploader_input_wrp');
 
     /* 摇一摇 */
@@ -20,7 +21,11 @@ $(function() {
 
     /* prop相关 */
     var propW, propH;
-    var propPath = './images/prop.png';
+    // 设置可选的道具列表
+    var propImages = ['money', 'coin'];
+
+    var selectedPropName = localStorage.getItem('propName') ? localStorage.getItem('propName') : $('.prop-name .active').html();
+    var propPath = './images/' + selectedPropName + '.png';
 
     /* 三击 */
     var clickCount = 0,
@@ -135,7 +140,7 @@ $(function() {
         img.onload = function() {
             propRealW = img.width;
             propRealH = img.height;
-            propW = parseInt($('.prop img').css('width'), 10);
+            propW = parseInt($propImg.css('width'), 10);
             propH = propRealH * propW / propRealW;
             maxOffsetL = windowW - propW;
             maxOffsetT = windowH - propH;
@@ -147,11 +152,11 @@ $(function() {
     // 每时每刻都在进行
     function deviceMotionHandler(eventData) {
         var acceleration = eventData.accelerationIncludingGravity;
-        var curTime = new Date().getTime();
-        if ((curTime - last_update) > 100) {
+        var currentTime = new Date().getTime();
+        if ((currentTime - last_update) > 100) {
             if($uploadBtn.css('display') !== 'block') {
-                var diffTime = curTime - last_update;
-                last_update = curTime;
+                var diffTime = currentTime - last_update;
+                last_update = currentTime;
                 current_x = acceleration.x;
                 current_y = acceleration.y;
                 current_z = acceleration.z;
@@ -331,13 +336,13 @@ $(function() {
 
     getPropSize(propPath);
 
-
     // var movecount;
     // var lastmovetime = 0,
     //     curmovetime = 0;
 
     var lastTouchX = 0;
     var lastTouchY = 0;
+    var boundaryGap = 50;
     /* 拖动 */
     $prop.on('touchstart', function(event) {
         // movecount = 0 ;
@@ -346,6 +351,11 @@ $(function() {
 
         if (event.targetTouches.length == 1) {
             var touch = event.targetTouches[0];
+
+            // 第一次touch的时候要给 lastTouchX, lastTouchY 赋值，以防第一次 touch过程 没有touchmove 两者为0，然后点一下就会消失
+            lastTouchX = touch.pageX;
+            lastTouchY = touch.pageY;
+
             propOffsetL = touch.pageX - $prop.offset().left;
             propOffsetT = touch.pageY - $prop.offset().top;
         }
@@ -372,12 +382,8 @@ $(function() {
             lastTouchX = touch.pageX;
             lastTouchY = touch.pageY;
 
-
             propLeftCornerLeft = touch.pageX - propOffsetL;
             propLeftCornerTop = touch.pageY - propOffsetT;
-
-            // console.log('$prop.offset().left', $prop.offset().left);
-            // console.log('propLeftCornerLeft', propLeftCornerLeft);
 
             $prop.css({
                 '-webkit-transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)',
@@ -402,14 +408,13 @@ $(function() {
                 current_z = 0;
             }
         }
-
         // lastmovetime = curmovetime;
 
     // 当一个触点被用户从触摸平面上移除（当用户将一个手指离开触摸平面）时触发。当触点移出触摸平面的边界时也将触发。例如用户将手指划出屏幕边缘。
     }).on('touchend', function() {
 
-        console.log('lastTouchX', lastTouchX);
-        console.log('lastTouchY', lastTouchY);
+        // console.log('lastTouchX', lastTouchX);
+        // console.log('lastTouchY', lastTouchY);
         // alert(movecount);
 
         /* 如果touchend的时候，只要道具有一点点已经超出边界，则消失
@@ -417,8 +422,6 @@ $(function() {
             // 消失后应该执行的代码
         }
         */
-
-
 
         /* 这个时候已经没有 event.targetTouches了，如下是计算 touchend 的时候，手指离开的坐标*/
         // var leaveTouchPageX = propLeftCornerLeft + propOffsetL;
@@ -435,7 +438,7 @@ $(function() {
 
         /* 抽得太快的时候，实际上是没有执行到这段代码，即不符合判断条件 */
         /* 也就是leaveTouchPageX 和 leaveTouchPageY 其实并不是离开的时候手的真实坐标 */
-        if (lastTouchX <= 50 || lastTouchX >= scrollWidth - 50 || lastTouchY <= 50 || lastTouchY >= scrollHeight - 50) {
+        if (lastTouchX <= boundaryGap || lastTouchX >= scrollWidth - boundaryGap || lastTouchY <= boundaryGap || lastTouchY >= scrollHeight - boundaryGap) {
 
             // 道具消失
             $prop.hide();
@@ -456,10 +459,9 @@ $(function() {
             last_z = 0;
             current_z = 0;
         }
-        // sto = setTimeout(function() {
+        
         $(window).on('deviceorientation', handleOrientation);
         raf = requestAnimationFrame(update);
-        // }, 200);
 
         // 这个时候已经没有 event.targetTouches了
         // $(window).on('deviceorientation', handleOrientation);
@@ -494,6 +496,88 @@ $(function() {
         }
     });
 
+
+    var storedPropVx, storedPropVy;
+    $prop.tap(function() {
+        if (clickCount < 2) {
+            if (clickTimer) {
+                clearTimeout(clickTimer);
+            }
+            clickCount++;
+            clickTimer = setTimeout(function() {
+                clickCount = 0;
+            }, 500);
+
+        } else if (clickCount === 2) {
+            clickCount = 0;
+            clearTimeout(clickTimer);
+
+            // 停止运动
+            $(window).off('deviceorientation');
+            cancelAnimationFrame(raf);
+            storedPropVx = propVx;
+            storedPropVy = propVy;
+            propVx = 0;
+            propVy = 0;
+            lastBeta = 0;
+            currentBeta = 0;
+            lastGamma = 0;
+            currentGamma = 0;
+
+            // 出现选择道具模块
+            $('.change-prop').show();
+        }
+    });
+
+
+    // 渲染prop-name列表
+    function initOptionalPropsList(propImages){
+        var activeProp = localStorage.getItem('propName') ? localStorage.getItem('propName') : propImages[0];
+        
+        propImages.forEach(function(data) {
+            if(data === activeProp) {
+                $('<li>').html(data).addClass('active').appendTo($('.prop-name'));
+            }else {
+                $('<li>').html(data).appendTo($('.prop-name'));
+            }
+        })
+        $propImg.removeClass().addClass(activeProp).prop('src', './images/'+ activeProp + '.png');
+        $('.prop-thumbnail img').removeClass().addClass(selectedPropName).prop('src', './images/'+ activeProp + '.png')
+    }
+
+    initOptionalPropsList(propImages);
+
+    $('.prop-name').on(clickEvent, function(event) {
+        var $target = $(event.target);
+        $target.addClass('active').siblings().removeClass('active');
+        selectedPropName = $target.html();
+        $('.prop-thumbnail img').removeClass().addClass(selectedPropName).prop('src', './images/'+ selectedPropName + '.png')
+    });
+
+    $('.change-prop').find('.ok').on(clickEvent, function() {
+        $('.change-prop').hide();
+        $('.change-mask').hide();
+        localStorage.setItem('propName', selectedPropName);
+        $propImg.removeClass().addClass(selectedPropName);
+        $propImg.prop('src', './images/'+ selectedPropName + '.png');
+
+        // 恢复道具的运动
+        propVx = storedPropVx;
+        propVy = storedPropVy;
+        $(window).on('deviceorientation', handleOrientation);
+        raf = requestAnimationFrame(update);
+    })
+
+    $('.change-prop').find('.cancel').on(clickEvent, function() {
+        $('.change-prop').hide();
+        $('.change-mask').hide();
+
+        // 恢复道具的运动
+        propVx = storedPropVx;
+        propVy = storedPropVy;
+        $(window).on('deviceorientation', handleOrientation);
+        raf = requestAnimationFrame(update);
+    })
 });
 
 

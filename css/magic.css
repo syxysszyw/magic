@@ -14,6 +14,9 @@ html {
 	font-size: 100px;
 }
 
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
 // iPhone4/5
 @media (max-width: 320px) {
    html {
@@ -207,21 +210,57 @@ img {
 }
 
 .prop img {
-	width: 270px;
 	vertical-align: bottom;
 }
+.prop .money {
+	width: 270px;
+}
 
+.prop .coin {
+	width: 110px;
+}
+.change-mask {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, .1);
+	z-index: 199;
+}
 .change-prop {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 2.6rem;
-	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .2) 50%, transparent);
+	padding-top: .5rem;
+	background-image: linear-gradient(to bottom, rgba(255, 255, 255, .7) 20%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, .7));
 	// background: rgba(0, 0, 0, .1);
+	z-index: 200;
+}
+.change-prop .opre {
+	height: .5rem;
+	position: relative;
+	top: -.5rem;
+}
+.change-prop .opre span {
+	position: absolute;
+	padding: .1rem 0;
+	text-transform: uppercase;
+	line-height: .3rem;
+	font-size: .24rem;
+}
+.change-prop .opre .cancel {
+	left: .15rem;
+	color: #999;
+}
+.change-prop .opre .ok {
+	right: .15rem;
+	color: #057aff;
 }
 .prop-name {
 	position: absolute;
-	top: 50%;
+	top: 60%;
 	transform: translateY(-50%);
 	// height: 70%;
 	max-height: 70%;
@@ -230,20 +269,27 @@ img {
 }
 .prop-name li {
 	width: 100%;
-	font-size: .18rem;
-	color: rgba(100, 100, 100, 0.5);
+	font-size: .2rem;
+	color: #666;
 	line-height: 2;
+	font-weight: bold;
 	text-align: center;
+	text-transform: uppercase;
 }
 .prop-name li.active {
-	color: rgba(100, 100, 100, 1);
+	color: #000;
 }
 .prop-thumbnail {
 	position: absolute;
+	width: 70%;
 	right: .15rem;
-	top: 50%;
+	top: 60%;
 	transform: translateY(-50%);
+	text-align: center;
 }
-.prop-thumbnail img {
+.prop-thumbnail .money {
 	width: 2.14rem;
+}
+.prop-thumbnail .coin {
+	width: 1.1rem;
 }
