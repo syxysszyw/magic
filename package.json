@@ -23,6 +23,10 @@
     "gulp-clean": "^0.3.2",
     "gulp-contrib-copy": "^0.1.2",
     "gulp-ftp": "^1.1.0",
+    "gulp-less": "^3.1.0",
     "gulp-util": "^3.0.7"
+  },
+  "dependencies": {
+    "gulp-autoprefixer": "^3.1.0"
   }
 }

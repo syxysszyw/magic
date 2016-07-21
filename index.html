@@ -75,17 +75,17 @@
 </head>
 
 <body>
-    <div class="intro" style="display: none;">
+    <div class="intro">
         <i class="close"></i>
         <h2>玩法: </h2>
         <p>1. 在 Safari 下打开，然后“添加到主屏幕”</p>
         <img class="intro1" src="./images/intro1.png">
         <p>2. 设置背景图片。打开“信手拈来”，添加一张本机的屏幕截图，模拟正处于某原生app环境，截图的状态栏为白色效果更佳（如下图所示）</p>
         <img class="intro2" src="./images/intro2.png">
-        <p>3. 设置背景后，摇一摇手机，能看到钱！！！</p>
-        <p>4. 拖动钱到屏幕边缘，钱会消失，配合真实的道具可以表演小魔术 :)</p>
-        <p>5. 三击屏幕能更换背景图片，切换场景。</p>
-        <a href="javascript:;" class="know">我知道了</a>
+        <p>3. 设置背景后，摇一摇手机，能看到意想不到的【东西】：）</p>
+        <p>4. 拖动【东西】到屏幕边缘，【东西】会消失，配合真实的道具可以表演小魔术 :)</p>
+        <p>5. 三击屏幕能更换背景图片，三击“【东西】”能切换道具，实现场景转换</p>
+        <!-- <a href="javascript:;" class="know">我知道了</a> -->
     </div>
     <div class="weui_uploader_input_wrp">
         <input id="file" class="weui_uploader_input" type="file" accept="image/jpg,image/jpeg,image/png,image/gif" multiple="">
@@ -93,22 +93,21 @@
     <div id="game-container">
     </div>
     <div class="prop" draggable="true">
-        <img src="./images/money.png" alt="道具">
+        <img src="./images/money.png" alt="道具" style="-webkit-user-select: none;user-select: none;">
     </div>
     <div id="ball"></div>
 
     <!-- 切换道具 -->
-    <div class="change-mask" style="display: ;"></div>
-    <div class="change-prop" style="display: ;">
+    <div class="change-mask"></div>
+    <div class="change-prop">
         <div class="opre">
             <span class="cancel">cancel</span>
             <span class="ok">ok</span>
         </div>
         <ul class="prop-name">
         </ul>
-        <div class="prop-thumbnail">
-            <img src="./images/prop.png">
-        </div>
+        <ul class="prop-thumbnails">
+        </ul>
     </div>
 
     <script src="./js/lib/requestAnimationFrame.js"></script>

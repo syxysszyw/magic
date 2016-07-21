@@ -2,6 +2,8 @@
 	padding: 0;
 	margin: 0;
 	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -17,26 +19,28 @@ html {
 body {
 	font-family: Arial, Helvetica, sans-serif;
 }
+
 // iPhone4/5
 @media (max-width: 320px) {
-   html {
-        font-size: 85.3333px;
-   }
+	html {
+		font-size: 85.3333px;
+	}
 }
 
 // iPhone 6
-@media (min-device-width : 375px) and (max-device-width : 667px) and (-webkit-min-device-pixel-ratio : 2){
-    html {
-        font-size: 100px;
-    }
+@media (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) {
+	html {
+		font-size: 100px;
+	}
 }
 
 // iPhone 6 +
-@media (min-device-width : 414px) and (max-device-width : 736px) and (-webkit-min-device-pixel-ratio : 3){
-    html {
-        font-size: 110.4px;
-    }
+@media (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) {
+	html {
+		font-size: 110.4px;
+	}
 }
+
 body {
 	overflow: hidden;
 	font-size: .14rem;
@@ -44,9 +48,10 @@ body {
 
 img {
 	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
-
 
 .intro {
 	position: absolute;
@@ -60,6 +65,12 @@ img {
 	padding: .6rem .3rem;
 	text-align: center;
 }
+
+.intro1 {
+	width: 2.6rem;
+	height: 1.09rem;
+}
+
 .intro .close {
 	position: absolute;
 	width: .22rem;
@@ -67,6 +78,7 @@ img {
 	right: .3rem;
 	top: .3rem;
 }
+
 .intro .close:after,
 .intro .close:before {
 	position: absolute;
@@ -77,10 +89,14 @@ img {
 	top: 0;
 	background-color: #fff;
 }
+
 .intro .close:after {
+	-webkit-transform: rotate(45deg);
 	transform: rotate(45deg);
 }
+
 .intro .close:before {
+	-webkit-transform: rotate(-45deg);
 	transform: rotate(-45deg);
 }
 
@@ -99,10 +115,12 @@ img {
 	width: 100%;
 	margin-bottom: .3rem;
 }
+
 .intro .intro2 {
 	width: 50%;
 	text-align: center;
 }
+
 .intro .know {
 	display: inline-block;
 	margin-top: .2rem;
@@ -112,6 +130,7 @@ img {
 	text-decoration: none;
 	color: #fff;
 }
+
 .weui_uploader_input_wrp {
 	position: absolute;
 	left: 50%;
@@ -199,12 +218,11 @@ img {
 	z-index: 100;
 	-webkit-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
+	-webkit-transform-origin: 0 0;
 	transform-origin: 0 0;
-	-moz-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 	backface-visibility: hidden;
 	-webkit-perspective: 1000;
-	-moz-perspective: 1000;
 	-ms-perspective: 1000;
 	perspective: 1000;
 }
@@ -212,13 +230,22 @@ img {
 .prop img {
 	vertical-align: bottom;
 }
+
 .prop .money {
-	width: 270px;
+	width: 2.7rem;
+	// width: 270px;
 }
 
 .prop .coin {
-	width: 110px;
+	width: 1.5rem;
+	// width: 150px;
 }
+
+.prop .clip {
+	width: .55rem;
+	// width: 55px;
+}
+
 .change-mask {
 	position: fixed;
 	top: 0;
@@ -227,22 +254,37 @@ img {
 	left: 0;
 	background-color: rgba(0, 0, 0, .1);
 	z-index: 199;
+	display: none;
 }
+
 .change-prop {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 2.6rem;
 	padding-top: .5rem;
+	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .7) 20%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, .7));
 	background-image: linear-gradient(to bottom, rgba(255, 255, 255, .7) 20%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, .7));
-	// background: rgba(0, 0, 0, .1);
+	-webkit-transform: translate3d(0, 100%, 0);
+	-webkit-transition: -webkit-transform .4s ease-out;
+	transition: -webkit-transform .4s ease-out;
+	transition: transform .4s ease-out;
+	transition: transform .4s ease-out, -webkit-transform .4s ease-out;
 	z-index: 200;
 }
+
+.change-prop.open {
+	display: block;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0)
+}
+
 .change-prop .opre {
 	height: .5rem;
 	position: relative;
 	top: -.5rem;
 }
+
 .change-prop .opre span {
 	position: absolute;
 	padding: .1rem 0;
@@ -250,23 +292,28 @@ img {
 	line-height: .3rem;
 	font-size: .24rem;
 }
+
 .change-prop .opre .cancel {
 	left: .15rem;
 	color: #999;
 }
+
 .change-prop .opre .ok {
 	right: .15rem;
 	color: #057aff;
 }
+
 .prop-name {
 	position: absolute;
 	top: 60%;
+	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 	// height: 70%;
 	max-height: 70%;
 	width: 30%;
 	overflow-y: auto;
 }
+
 .prop-name li {
 	width: 100%;
 	font-size: .2rem;
@@ -276,20 +323,36 @@ img {
 	text-align: center;
 	text-transform: uppercase;
 }
+
 .prop-name li.active {
 	color: #000;
 }
+
 .prop-thumbnail {
 	position: absolute;
 	width: 70%;
 	right: .15rem;
 	top: 60%;
+	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 	text-align: center;
+	list-style: none;
+	opacity: 0;
+	transition: opacity .2s ease;
 }
-.prop-thumbnail .money {
+.prop-thumbnail.active {
+	opacity: 1;
+	z-index: 200;
+}
+
+.prop-thumbnail.money img {
 	width: 2.14rem;
 }
-.prop-thumbnail .coin {
+
+.prop-thumbnail.coin img {
 	width: 1.1rem;
+}
+
+.prop-thumbnail.clip img {
+	width: .4rem;
 }
