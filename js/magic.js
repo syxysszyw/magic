@@ -166,7 +166,7 @@ $(function() {
                 // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
                 //     console.log('yes');
                 //     if ($prop.css('display') !== 'block') {
-                //         $prop.show().css({
+                //         $prop.show('slow').css({
                 //             '-webkit-transform': 'translate3d(0, 0, 0)',
                 //             'transform': 'translate3d(0, 0, 0)'
                 //         });
@@ -187,7 +187,7 @@ $(function() {
                         propVx = 0;
                         propVy = 0;
 
-                        $prop.show().css({
+                        $prop.show('slow').css({
                             '-webkit-transform': 'translate3d(0, 0, 0)',
                             'transform': 'translate3d(0, 0, 0)'
                         });
@@ -237,6 +237,7 @@ $(function() {
 
         propVy = absBeta / 90 * betaDirection * 40;
         propVx = currentGamma / 90 * 40;
+
 
         propLeftCornerTop += propVy;
         propLeftCornerLeft += propVx;
@@ -350,9 +351,14 @@ $(function() {
 
     var lastTouchX, lastTouchY;
     var boundaryGap = 50;
+    var resetHandleOrientation;
+
+    
     /* 拖动 */
     $prop.on('touchstart', function(event) {
         // movecount = 0 ;
+        event.preventDefault();
+        
         $(window).off('deviceorientation');
         cancelAnimationFrame(raf);
 
@@ -455,10 +461,17 @@ $(function() {
             current_z = 0;
         }
         
-        $(window).on('deviceorientation', handleOrientation);
-        raf = requestAnimationFrame(update);
+        resetHandleOrientation = setTimeout(function() {
+
+            $(window).on('deviceorientation', handleOrientation);
+            raf = requestAnimationFrame(update);
+
+        }, 100);
+        
 
     });
+
+    var resetHandleOrientation;
 
     /* 判断三击 */
     $gameContainer.tap(function() {
@@ -509,7 +522,7 @@ $(function() {
 
 
     var storedPropVx, storedPropVy;
-    $prop.tap(function() {
+    $prop.tap(function(event) {
         if (clickCount < 2) {
             if (clickTimer) {
                 clearTimeout(clickTimer);
@@ -520,25 +533,35 @@ $(function() {
             }, 500);
 
         } else if (clickCount === 2) {
-            clickCount = 0;
-            clearTimeout(clickTimer);
+
 
             // 停止运动
             $(window).off('deviceorientation');
             cancelAnimationFrame(raf);
+            clearTimeout(resetHandleOrientation);
+
+            clickCount = 0;
+            clearTimeout(clickTimer);
+
 
             storedPropVx = propVx;
             storedPropVy = propVy;
 
             propVx = 0;
             propVy = 0;
+
+
+            console.log('propVx', propVx);
+            console.log('propVy', propVy);
             lastBeta = 0;
             currentBeta = 0;
             lastGamma = 0;
             currentGamma = 0;
 
+
             // 出现选择道具模块
             $('.change-prop').addClass('open');
+
         }
     });
 
@@ -567,7 +590,8 @@ $(function() {
         $(propNamesStr).appendTo($('.prop-name'));
         $(propThumbnailsStr).appendTo($('.prop-thumbnails'));
         
-        $propImg.removeClass().addClass(activeProp).prop('src', './images/'+ activeProp + '.png');
+        $prop.addClass(activeProp);
+        $propImg.prop('src', './images/'+ activeProp + '.png');
     }
 
     initOptionalPropsList(propImages);
@@ -585,9 +609,10 @@ $(function() {
 
         selectedPropName = $('.prop-name .active').html();
         localStorage.setItem('propName', selectedPropName);
-        $propImg.removeClass().addClass(selectedPropName);
+        $prop.removeClass().addClass('prop ' + selectedPropName).hide();
         $propImg.prop('src', './images/'+ selectedPropName + '.png');
         propPath = './images/' + selectedPropName + '.png';
+        $prop.show('slow');
         getPropSize(propPath);
 
         // 恢复道具的运动

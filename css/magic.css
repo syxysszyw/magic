@@ -231,17 +231,17 @@ img {
 	vertical-align: bottom;
 }
 
-.prop .money {
+.prop.money img{
 	width: 2.7rem;
 	// width: 270px;
 }
 
-.prop .coin {
+.prop.coin img{
 	width: 1.5rem;
 	// width: 150px;
 }
 
-.prop .clip {
+.prop.clip img{
 	width: .55rem;
 	// width: 55px;
 }
@@ -338,6 +338,7 @@ img {
 	text-align: center;
 	list-style: none;
 	opacity: 0;
+	-webkit-transition: opacity .2s ease;
 	transition: opacity .2s ease;
 }
 .prop-thumbnail.active {
