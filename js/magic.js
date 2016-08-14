@@ -109,22 +109,12 @@ $(function() {
             img.onload = function() {
                 gameContainerWidthHeightRatio = img.width / img.height;
                 if(gameContainerWidthHeightRatio < windowWidthHeightRatio) {
-                    // 图片的长/宽比 小于    屏幕的长宽比，strechDirection为1， 表示要把图片的宽拉伸至屏幕宽度
-                    // 图片的长/宽比 大于等于 屏幕的长宽比，strechDirection为0， 表示要把图片的高拉伸到屏幕高度
-                    // strechDirection = gameContainerWidthHeightRatio < windowWidthHeightRatio ? 1 : 0;
-
-                    // 缩放宽度
-                    // 缩放宽度
-                    // 缩放宽度
                     localStorage.setItem('strechDirection', 1);
                     $gameContainer.find('img').css({
                         'height': 'auto',
                         'width': '100%'
                     });
                 } else {
-                    // 缩放高度
-                    // 缩放高度
-                    // 缩放高度
                     localStorage.setItem('strechDirection', 0);
                 }
             }
@@ -160,29 +150,9 @@ $(function() {
                 current_x = acceleration.x;
                 current_y = acceleration.y;
                 current_z = acceleration.z;
-                // var speed = Math.abs(current_x + current_y + current_z - last_x - last_y - last_z) / diffTime * 10000;
-                // var speed = Math.abs(current_x - last_x)  / diffTime * 10000 || Math.abs(current_y - last_y)  / diffTime * 10000 || Math.abs(current_z - last_z)  / diffTime * 10000 > spead;
-
-                // if(Math.abs(current_x - last_x)  / diffTime * 10000 > spead || Math.abs(current_y - last_y)  / diffTime * 10000 > spead || Math.abs(current_z - last_z)  / diffTime * 10000 > spead) {
-                //     console.log('yes');
-                //     if ($prop.css('display') !== 'block') {
-                //         $prop.show('slow').css({
-                //             '-webkit-transform': 'translate3d(0, 0, 0)',
-                //             'transform': 'translate3d(0, 0, 0)'
-                //         });
-                //         propVx = 0;
-                //         propVy = 0;
-                //         $(window).on('deviceorientation', handleOrientation);
-                //     }
-                // }
                 if (Math.abs(current_x - last_x)  / diffTime * 10000 > limitedSpead || Math.abs(current_y - last_y)  / diffTime * 10000 > limitedSpead || Math.abs(current_z - last_z)  / diffTime * 10000 > limitedSpead ) {
                     if($prop.css('display') !== 'block') {
-                        // console.log(speed);
-                        // alert("摇到了");
-                        // console.log('current_x - last_x', (current_x - last_x) / diffTime * 10000);
-                        // console.log('current_y - last_y', (current_y - last_y) / diffTime * 10000);
-                        // console.log('current_z - last_z', (current_z - last_z) / diffTime * 10000);
-                        
+
                         update();
                         propVx = 0;
                         propVy = 0;
@@ -214,12 +184,6 @@ $(function() {
         }
     }
 
-
-    /* gamma  向左转一圈 0~-90, 90~0, 0~-90，90~0 会有一个“-90 到 90” 的瞬间变化，一直是在减小的过程 
-       整体加90  向左转一圈 90~0, 180~90, 90~0，180~90 会有一个“0 到 180” 的瞬间变化，一直是在减小的过程 
-
-       gamma  向右转一圈 0~90, -90~0, 0~90，-90~0 会有一个“180 到 0” 的瞬间变化，一直是在增大的过程
-       整体加90  向右转一圈 90~180, 0~90, 90~180，0~90 会有一个“90 到 -90” 的瞬间变化，一直是在增大的过程  */
     var total = 0;
     function update(evt) {
 
@@ -291,25 +255,10 @@ $(function() {
         }
     }
 
-
-
-    // alert(window.screen.availWidth * window.devicePixelRatio);
-    // alert(window.screen.availHeight * window.devicePixelRatio);
-
-    // alert('availHeight ' + window.screen.availHeight);
-    // alert('innerHeight ' + window.innerHeight);
-    // alert('clientHeight ' + document.body.clientHeight);
-    // alert('offsetHeight ' + document.body.offsetHeight);
-    // alert('scrollHeight ' + document.body.scrollHeight);
-
     /* 启动全屏 */
     launchFullscreen(document.documentElement); // 整个网页
     launchFullscreen(document.getElementById('game-container')); // 某个页面元素
     
-
-    // if(!localStorage.windowRatio) {
-    //     localStorage.setItem('windowRatio', windowWidthHeightRatio);
-    // }
 
     $('.intro .close, .know').tap(function() {
         $('.intro').hide();
@@ -345,15 +294,36 @@ $(function() {
     propPath = './images/' + selectedPropName + '.png';
     getPropSize(propPath);
 
-    // var movecount;
-    // var lastmovetime = 0,
-    //     curmovetime = 0;
 
     var lastTouchX, lastTouchY;
-    var boundaryGap = 50;
+    var boundaryGap = 100;
     var resetHandleOrientation;
 
-    
+    var accelerationInterval;
+    var acceleration;
+    var deltaTime = 50;
+    var startPoint, endPoint;
+    var moveCurrentPosition;
+    var hasSetTimeout = false;
+
+    function calculateAcceleration(event) {
+        startPoint = moveCurrentPosition;
+
+        accelerationInterval = setInterval(function() {
+            endPoint = moveCurrentPosition;
+
+            // 这里计算加速度
+            acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
+            console.log(acceleration);
+
+            startPoint = endPoint;
+            // $('.testboundary').css({
+            //     'border-width': boundaryGap*acceleration + 'px'
+            // })
+        }, deltaTime);
+    }
+
+
     /* 拖动 */
     $prop.on('touchstart', function(event) {
         // movecount = 0 ;
@@ -365,40 +335,35 @@ $(function() {
         if (event.targetTouches.length == 1) {
             var touch = event.targetTouches[0];
 
-            // 第一次touch的时候要给 lastTouchX, lastTouchY 赋值，以防第一次 touch过程 没有touchmove 两者为0，然后点一下就会消失
-            // lastTouchX = touch.pageX;
-            // lastTouchY = touch.pageY;
-
             propOffsetL = touch.pageX - $prop.offset().left;
             propOffsetT = touch.pageY - $prop.offset().top;
         }
 
     }).on('touchmove', function(event) {
-        event.preventDefault();
-        console.log('touchmove-gettime', new Date().getTime());
-        // 统计touchmove的次数，如果抽钱抽得很快，次数小（2-3），速度慢则次数多.
-        // movecount++;
 
-        // 经测试，touchmove的触发频率大约是14-20（约16/17ms）执行一次
-        // 不同浏览器上 touchmove 事件的触发频率并不相同。这个触发频率还和硬件设备的性能有关。因此决不能让程序的运作依赖于某个特定的触发频率（via: https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent）
-        // curmovetime = new Date().getTime();
-        // console.log(curmovetime - lastmovetime);
+        event.preventDefault();
 
         $(window).off('deviceorientation');
         cancelAnimationFrame(raf);
-        // clearTimeout(sto);
         
         event.preventDefault(); //阻止其他事件
         // 如果这个元素的位置内只有一个手指的话
         if (event.targetTouches.length == 1) {
-            // console.log('total', total++);
             var touch = event.targetTouches[0]; // 把元素放在手指所在的位置
 
-            // lastTouchX = touch.pageX;
-            // lastTouchY = touch.pageY;
+            moveCurrentPosition = {
+                'x': touch.pageX,
+                'y': touch.pageY
+            }
+            // startPoint = moveCurrentPosition;
 
             propLeftCornerLeft = touch.pageX - propOffsetL;
             propLeftCornerTop = touch.pageY - propOffsetT;
+
+            if(!hasSetTimeout){
+                calculateAcceleration(event);
+                hasSetTimeout = true;
+            }
 
             $prop.css({
                 '-webkit-transform': 'translate3d('+ propLeftCornerLeft + 'px, '+ propLeftCornerTop + 'px, 0)',
@@ -424,24 +389,22 @@ $(function() {
                 current_z = 0;
             }
         }
-        // lastmovetime = curmovetime;
 
     // 当一个触点被用户从触摸平面上移除（当用户将一个手指离开触摸平面）时触发。当触点移出触摸平面的边界时也将触发。例如用户将手指划出屏幕边缘。
     }).on('touchend touchcancel touchleave', function(event) {
 
+        hasSetTimeout = false;
+        clearTimeout(accelerationInterval);
+        
         lastTouchX = event.pageX;
         lastTouchY = event.pageY;
-
-        // console.log('touchend-gettime', new Date().getTime());
-        // console.log('touchend-lastTouchX', lastTouchX);
-        // console.log('touchend-lastTouchY', lastTouchY);
 
         $('#ball').css({
             '-webkit-transform': 'translate3d('+ lastTouchX + 'px, '+ lastTouchY + 'px, 0)',
             'transform': 'translate3d('+ lastTouchX + 'px, '+ lastTouchY + 'px, 0)'
         });
 
-        if (lastTouchX <= boundaryGap || lastTouchX >= windowW - boundaryGap || lastTouchY <= boundaryGap || lastTouchY >= windowH - boundaryGap) {
+        if (lastTouchX <= boundaryGap * acceleration || lastTouchX >= windowW - boundaryGap * acceleration || lastTouchY <= boundaryGap * acceleration || lastTouchY >= windowH - boundaryGap * acceleration) {
 
             $prop.hide();
             // 重置相关变量
@@ -471,8 +434,6 @@ $(function() {
 
     });
 
-    var resetHandleOrientation;
-
     /* 判断三击 */
     $gameContainer.tap(function() {
         if (clickCount < 2) {
@@ -494,33 +455,6 @@ $(function() {
         }
     });
 
-
-    // var lasttouchmove = null;
-    // $gameContainer.on('touchstart', function(evt) {
-    //     console.log('touchstart');
-    // }).on('touchmove', function(evt) {
-    //     lasttouchmove = evt;
-    //     console.log('touchmove', lasttouchmove);
-    // }).on('touchend', function(evt) {
-    //     console.log('lasttouchmove', lasttouchmove);
-    //     // console.log('lasttouchmove', lasttouchmove);
-    //     console.log('touchend', evt);
-    //     console.log('lasttouchmove.pageX', lasttouchmove.pageX);
-    //     console.log('lasttouchmove.changedTouches[0].pageX', lasttouchmove.changedTouches[0].pageX);
-    //     console.log('evt.pageX', evt.pageX);
-    //     console.log('evt.changedTouches[0].pageX', evt.changedTouches[0].pageX);
-    // }).on('touchleave', function(evt) {
-    //     console.log('touchleave');
-    // }).on('touchenter', function(evt) {
-    //     console.log('touchenter');
-    // }).on('touchcancel', function(evt) {
-    //     console.log('touchcancel');
-    // });
-
-
-
-
-
     var storedPropVx, storedPropVy;
     $prop.tap(function(event) {
         if (clickCount < 2) {
@@ -533,8 +467,6 @@ $(function() {
             }, 500);
 
         } else if (clickCount === 2) {
-
-
             // 停止运动
             $(window).off('deviceorientation');
             cancelAnimationFrame(raf);
@@ -542,7 +474,6 @@ $(function() {
 
             clickCount = 0;
             clearTimeout(clickTimer);
-
 
             storedPropVx = propVx;
             storedPropVy = propVy;
@@ -557,7 +488,6 @@ $(function() {
             currentBeta = 0;
             lastGamma = 0;
             currentGamma = 0;
-
 
             // 出现选择道具模块
             $('.change-prop').addClass('open');
@@ -633,8 +563,3 @@ $(function() {
         raf = requestAnimationFrame(update);
     })
 });
-
-
-// 改变方向运动的时候加一个延迟
-// 运动会跳，多加水平面以下的运动判断中
-// 需要看的文档 https://github.com/ajfisher/deviceapi-normaliser#readme
