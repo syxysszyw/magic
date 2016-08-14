@@ -300,29 +300,50 @@ $(function() {
     var resetHandleOrientation;
 
     var accelerationInterval;
+    var accelerationAnimationFrame;
     var acceleration;
+    var minAcceleration = 0.2;
+    var maxAcceleration = 2;
     var deltaTime = 50;
     var startPoint, endPoint;
+    startPoint = {
+        x: 0,
+        y: 0
+    }
     var moveCurrentPosition;
     var hasSetTimeout = false;
 
+    // function calculateAcceleration(event) {
+    //     startPoint = moveCurrentPosition;
+
+    //     accelerationInterval = setInterval(function() {
+    //         endPoint = moveCurrentPosition;
+
+    //         // 这里计算加速度
+    //         acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
+    //         console.log(acceleration);
+
+    //         startPoint = endPoint;
+    //         // $('.testboundary').css({
+    //         //     'border-width': boundaryGap*acceleration + 'px'
+    //         // })
+    //     }, deltaTime);
+    // }
+
     function calculateAcceleration(event) {
-        startPoint = moveCurrentPosition;
+        endPoint = moveCurrentPosition;
 
-        accelerationInterval = setInterval(function() {
-            endPoint = moveCurrentPosition;
+        acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
+        acceleration = acceleration >= minAcceleration ? acceleration : minAcceleration;
+        console.log(acceleration);
 
-            // 这里计算加速度
-            acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
-            console.log(acceleration);
-
-            startPoint = endPoint;
-            // $('.testboundary').css({
-            //     'border-width': boundaryGap*acceleration + 'px'
-            // })
-        }, deltaTime);
+        startPoint = endPoint;  
+        // $('.testboundary').css({
+        //     'border-width': boundaryGap*acceleration + 'px'
+        // })
+        accelerationAnimationFrame = requestAnimationFrame(calculateAcceleration);
     }
-
+    
 
     /* 拖动 */
     $prop.on('touchstart', function(event) {
@@ -355,13 +376,14 @@ $(function() {
                 'x': touch.pageX,
                 'y': touch.pageY
             }
-            // startPoint = moveCurrentPosition;
 
             propLeftCornerLeft = touch.pageX - propOffsetL;
             propLeftCornerTop = touch.pageY - propOffsetT;
 
             if(!hasSetTimeout){
-                calculateAcceleration(event);
+                setTimeout(function() {
+                    calculateAcceleration(event);
+                }, 100)
                 hasSetTimeout = true;
             }
 
@@ -394,7 +416,8 @@ $(function() {
     }).on('touchend touchcancel touchleave', function(event) {
 
         hasSetTimeout = false;
-        clearTimeout(accelerationInterval);
+        // clearTimeout(accelerationInterval);
+        cancelAnimationFrame(accelerationAnimationFrame);
         
         lastTouchX = event.pageX;
         lastTouchY = event.pageY;
