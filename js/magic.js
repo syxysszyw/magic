@@ -78,14 +78,26 @@ $(function() {
             $gameContainer.html('<img src="' + result + '" alt="" />');
             if(localStorage.getItem('strechDirection')) {
                 $gameContainer.find('img').css({
-                    'height': 'auto',
+                    // 'height': 'auto',
+                    'height': scaleRate,
                     'width': '100%'
                 });
             }
         }
     }
 
+    var isIphone6;
+    var scaleRate = '103%';
+    if(screen.availWidth == 375) {
+        isIphone6 =  true;
+        scaleRate = '102.99%';
+    } else {
+        isIphone6 = false;
+        scaleRate = '102.89%';
+    }
+
     function readAsDataURL() {
+        console.log(isIphone6);
         //检验是否为图像文件  
         var file = $file[0].files[0];
         if (!/image\/\w+/.test(file.type)) {
@@ -111,7 +123,8 @@ $(function() {
                 if(gameContainerWidthHeightRatio < windowWidthHeightRatio) {
                     localStorage.setItem('strechDirection', 1);
                     $gameContainer.find('img').css({
-                        'height': 'auto',
+                        // 'height': 'auto',
+                        'height': scaleRate,
                         'width': '100%'
                     });
                 } else {
@@ -302,9 +315,9 @@ $(function() {
     var accelerationInterval;
     var accelerationAnimationFrame;
     var acceleration;
-    var minAcceleration = 0.2;
+    var minAcceleration = 0.5;
     var maxAcceleration = 2;
-    var deltaTime = 50;
+    var deltaTime = 16;
     var startPoint, endPoint;
     startPoint = {
         x: 0,
@@ -330,17 +343,22 @@ $(function() {
     //     }, deltaTime);
     // }
 
+    // var startTime, endTime;
     function calculateAcceleration(event) {
+        // endTime = new Date().getTime();
+        // console.log('duration', endTime - startTime);  16或17
         endPoint = moveCurrentPosition;
 
-        acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
+        acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime;
         acceleration = acceleration >= minAcceleration ? acceleration : minAcceleration;
+        // acceleration = acceleration <= maxAcceleration ? acceleration : maxAcceleration;
         console.log(acceleration);
 
         startPoint = endPoint;  
-        // $('.testboundary').css({
-        //     'border-width': boundaryGap*acceleration + 'px'
-        // })
+        $('.testboundary').css({
+            'border-width': boundaryGap*acceleration + 'px'
+        })
+        // startTime = endTime;
         accelerationAnimationFrame = requestAnimationFrame(calculateAcceleration);
     }
     
@@ -352,6 +370,7 @@ $(function() {
         
         $(window).off('deviceorientation');
         cancelAnimationFrame(raf);
+        cancelAnimationFrame(accelerationAnimationFrame);
 
         if (event.targetTouches.length == 1) {
             var touch = event.targetTouches[0];
@@ -382,6 +401,7 @@ $(function() {
 
             if(!hasSetTimeout){
                 setTimeout(function() {
+                    // startTime = new Date().getTime();
                     calculateAcceleration(event);
                 }, 100)
                 hasSetTimeout = true;
@@ -418,7 +438,7 @@ $(function() {
         hasSetTimeout = false;
         // clearTimeout(accelerationInterval);
         cancelAnimationFrame(accelerationAnimationFrame);
-        
+
         lastTouchX = event.pageX;
         lastTouchY = event.pageY;
 
