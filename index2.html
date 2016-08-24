@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>信手拈来</title>
+    <link rel="stylesheet" type="text/css" href="./css/magic.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- 状态栏的值可能为black, default, black-translucent -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- web app的放置主屏幕上icon文件路径 -->
+    <link rel="apple-touch-icon-precomposed" href="iphone_magic.png" />
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- 是针对一些老的不识别viewport的浏览器，列如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+    <style type="text/css">
+    #ball {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 100%;
+        transform: translate3d(0,0,0);
+        background-color: yellow;
+        /*background-color: transparent;*/
+    }
+    .testboundary {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border: 50px solid #8f8;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="weui_uploader_input_wrp">
+        <input id="file" class="weui_uploader_input" type="file" accept="image/jpg,image/jpeg,image/png,image/gif" multiple="">
+    </div>
+    <div id="game-container">
+    </div>
+    <div class="prop" draggable="true">
+        <img src="./images/money.png" alt="道具" style="-webkit-user-select: none;user-select: none;">
+    </div>
+
+    <div id="ball"></div>
+    <div class="testboundary"></div>
+    <script src="./js/lib/requestAnimationFrame.js"></script>
+    <script src="./js/lib/zepto.min.js"></script>
+    <script src="./js/lib/touch.js"></script>
+    <script src="./js/magic2.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DeviceMotion</title>
+    <link rel="stylesheet" type="text/css" href="./css/magic.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 状态栏的值可能为black, default, black-translucent -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style type="text/css">
+    .orientationDemo {
+        padding: 20px;
+    }
+    .item {
+        margin-bottom: 20px;
+    }
+    .conclusion {
+        margin-top: 10px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="orientationDemo">
+        <div class="accelerationIncludingGravity">
+            <h1>DeviceMotion</h1>
+            <div class="item">
+                <h2>accelerationIncludingGravity</h2>
+                <p>accelerationIncludingGravity.x : 
+                <br>&nbsp;&nbsp;&nbsp;<span class="accelerationIncludingGravityX"></span></p>
+                <p>accelerationIncludingGravity.y : 
+                <br>&nbsp;&nbsp;&nbsp;<span class="accelerationIncludingGravityY"></span></p>
+                <p>accelerationIncludingGravity.z : 
+                <br>&nbsp;&nbsp;&nbsp;<span class="accelerationIncludingGravityZ"></span></p>
+            </div>
+            
+            <div class="item">
+                <h2>acceleration</h2>
+                <p>acceleration.x : <span class="accelerationX"></span></p>
+                <p>acceleration.y : <span class="accelerationY"></span></p>
+                <p>acceleration.z : <span class="accelerationZ"></span></p>
+            </div>
+            
+            <div class="item">
+                <h2>rotationRate</h2>
+                <p>rotationRate.alpha : <span class="rotationRateAlpha"></span></p>
+                <p>rotationRate.beta : <span class="rotationRateBeta"></span></p>
+                <p>rotationRate.gamma : <span class="rotationRateGamma"></span></p>
+            </div>
+            <div class="item">
+                <h2>interval</h2>
+                <p><span class="interval"></span></p>
+            </div>
+
+            <div class="item">
+                <h2>结论：</h2>
+                <ul class="conclusion">
+                    <li>MotionEvent 时刻进行着</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="./js/lib/requestAnimationFrame.js"></script>
+    <script src="./js/lib/zepto.min.js"></script>
+    <script src="./js/lib/touch.js"></script>
+    <!-- <script src="./js/magic.js"></script> -->
+    <script src="./js/demo1.js"></script>
+</body>
+
+</html>

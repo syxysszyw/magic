@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DeviceOrientaion</title>
+    <link rel="stylesheet" type="text/css" href="./css/magic.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 状态栏的值可能为black, default, black-translucent -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style type="text/css">
+    .orientationDemo {
+        padding: 20px;
+    }
+    .item {
+        margin-bottom: 20px;
+    }
+    .conclusion {
+        margin-top: 10px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="orientationDemo">
+        <div class="accelerationIncludingGravity">
+            <h1>DeviceOrientaion</h1>
+            <div class="item">
+                <h2>absolute</h2>
+                <p>absolute : <span class="absolute"></span></p>
+            </div>
+
+            <div class="item">
+                <h2>alpha</h2>
+                <p>alpha : <span class="alpha"></span></p>
+            </div>
+            <div class="item">
+                <h2>gamma</h2>
+                <p>gamma : <span class="gamma"></span></p>
+            </div>
+            <div class="item">
+                <h2>beta</h2>
+                <p>beta : <span class="beta"></span></p>
+            </div>
+            <div class="item">
+                <h2>webkitCompassHeading</h2>
+                <p>webkitCompassHeading : <span class="webkitCompassHeading"></span></p>
+            </div>
+            <div class="item">
+                <h2>webkitCompassAccuracy</h2>
+                <p>webkitCompassAccuracy : <span class="webkitCompassAccuracy"></span></p>
+            </div>
+        </div>
+    </div>
+    <script src="./js/lib/requestAnimationFrame.js"></script>
+    <script src="./js/lib/zepto.min.js"></script>
+    <script src="./js/lib/touch.js"></script>
+    <!-- <script src="./js/magic.js"></script> -->
+    <script src="./js/demo2.js"></script>
+</body>
+
+</html>
