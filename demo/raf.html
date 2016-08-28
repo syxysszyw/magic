@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>requestAnimationFrame</title>
+	<style type="text/css">
+	#demo,
+	#demo2 {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		background: #ccc;
+		top: 0;
+	}
+	#text {
+		margin-top: 120px;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="demo" style="left: 0;"></div>
+	<!-- <div id="demo2" style="left: 0;"></div> -->
+	<div id="text"></div>
+	<script type="text/javascript" src="../js/lib/requestAnimationFrame.js"></script>
+	<script type="text/javascript">
+	var demo = document.getElementById('demo');
+	var text = document.getElementById('text');
+
+	function rander() {
+		demo.style.left = parseInt(demo.style.left) + 1 + 'px'; 
+		if (parseInt(demo.style.left) <= 300) {
+			requestAnimationFrame(arguments.callee);
+			text.innerHTML = demo.style.left;
+		}
+	}
+
+	requestAnimationFrame(rander);
+
+	</script>
+</body>
+
+</html>

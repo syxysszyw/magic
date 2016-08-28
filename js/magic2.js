@@ -161,9 +161,7 @@ $(function() {
                 current_x = acceleration.x;
                 current_y = acceleration.y;
                 current_z = acceleration.z;
-                console.log('current_x', current_x);
-                console.log('current_y', current_y);
-                console.log('current_z', current_z);
+
                 if (Math.abs(current_x - last_x) / diffTime * 10000 > limitedSpead || Math.abs(current_y - last_y) / diffTime * 10000 > limitedSpead || Math.abs(current_z - last_z) / diffTime * 10000 > limitedSpead) {
                     if ($prop.css('display') !== 'block') {
 
@@ -309,7 +307,7 @@ $(function() {
 
 
     var lastTouchX, lastTouchY;
-    var boundaryGap = 100;
+    var boundaryGap = 50;
     var resetHandleOrientation;
 
     var accelerationInterval;
@@ -428,8 +426,8 @@ $(function() {
             'transform': 'translate3d(' + lastTouchX + 'px, ' + lastTouchY + 'px, 0)'
         });
 
-        if (lastTouchX <= boundaryGap * acceleration || lastTouchX >= windowW - boundaryGap * acceleration || lastTouchY <= boundaryGap * acceleration || lastTouchY >= windowH - boundaryGap * acceleration) {
-
+        if (lastTouchX <= boundaryGap || lastTouchX >= windowW - boundaryGap || lastTouchY <= boundaryGap || lastTouchY >= windowH - boundaryGap) {
+            console.log('outside');
             $prop.hide();
             // 重置相关变量
             $(window).off('deviceorientation');
@@ -454,8 +452,6 @@ $(function() {
             raf = requestAnimationFrame(update);
 
         }, 100);
-
-
     });
 
     /* 判断三击 */

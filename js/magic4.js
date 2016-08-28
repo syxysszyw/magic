@@ -207,9 +207,9 @@ $(function() {
         var betaDirection = currentBeta >= 0 ? 1 : -1;
 
         // 判断突变
-        if (Math.abs(currentGamma - lastGamma) >= 80) {
-            currentGamma = 0 - currentGamma;
-        }
+        // if (Math.abs(currentGamma - lastGamma) >= 80) {
+        //     currentGamma = 0 - currentGamma;
+        // }
 
         propVy = absBeta / 90 * betaDirection * 40;
         propVx = currentGamma / 90 * 40;
@@ -325,23 +325,6 @@ $(function() {
     var moveCurrentPosition;
     var hasSetTimeout = false;
 
-    // function calculateAcceleration(event) {
-    //     startPoint = moveCurrentPosition;
-
-    //     accelerationInterval = setInterval(function() {
-    //         endPoint = moveCurrentPosition;
-
-    //         // 这里计算加速度
-    //         acceleration = Math.sqrt((endPoint.x - startPoint.x)*(endPoint.x - startPoint.x) + (endPoint.y - startPoint.y)*(endPoint.y - startPoint.y)) / deltaTime
-    //         console.log(acceleration);
-
-    //         startPoint = endPoint;
-    //         // $('.testboundary').css({
-    //         //     'border-width': boundaryGap*acceleration + 'px'
-    //         // })
-    //     }, deltaTime);
-    // }
-
     // var startTime, endTime;
     function calculateAcceleration(event) {
         // endTime = new Date().getTime();
@@ -355,8 +338,8 @@ $(function() {
 
         startPoint = endPoint;
         $('.testboundary').css({
-                'border-width': boundaryGap * acceleration + 'px'
-            })
+            'border-width': boundaryGap * acceleration + 'px'
+        })
             // startTime = endTime;
         accelerationAnimationFrame = requestAnimationFrame(calculateAcceleration);
     }
@@ -400,7 +383,6 @@ $(function() {
 
             if (!hasSetTimeout) {
                 setTimeout(function() {
-                    // startTime = new Date().getTime();
                     calculateAcceleration(event);
                 }, 100)
                 hasSetTimeout = true;
@@ -435,7 +417,6 @@ $(function() {
     }).on('touchend touchcancel touchleave', function(event) {
 
         hasSetTimeout = false;
-        // clearTimeout(accelerationInterval);
         cancelAnimationFrame(accelerationAnimationFrame);
 
         lastTouchX = event.pageX;
@@ -605,8 +586,3 @@ $(function() {
         raf = requestAnimationFrame(update);
     })
 });
-
-
-// 待优化的点
-// 1. 用法指引
-// 2. 页面固定
