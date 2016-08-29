@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>requestAnimationFrame</title>
+	<style type="text/css">
+	#demo,
+	#demo2 {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		background: #ccc;
+		top: 20px;
+	}
+	#text {
+		width: 400px;
+		text-align: center;
+		margin-top: 140px;
+		font-size: 40px;
+	}
+	.btns {
+		width: 400px;
+		margin-top: 20px;
+		text-align: center;
+	}
+	button {
+		padding: 4px 7px;
+		border: 1px solid #a8a8a8;
+		background: #fff;
+		font-size: 24px;
+		margin: 0 20px;
+		color: #666;
+		border-radius: 4px;
+	}
+	</style>
+</head>
+
+<body>
+	<div id="demo" style="left: 0;"></div>
+	<div id="text"></div>
+	<div class="btns">
+		<button id="stop" type="button">stop</button>
+		<button id="restart" type="button">restart</button>
+	</div>
+
+	<script type="text/javascript" src="./js/lib/requestAnimationFrame.js"></script>
+	<script type="text/javascript">
+	var demo = document.getElementById('demo');
+	var text = document.getElementById('text');
+	var stop = document.getElementById('stop');
+	var restart = document.getElementById('restart');
+	var requestID;
+
+	function animate() {
+		demo.style.left = parseInt(demo.style.left) + 1 + 'px'; 
+		if (parseInt(demo.style.left) <= 300) {
+			requestID = requestAnimationFrame(animate);
+			text.innerHTML = demo.style.left;
+		}
+	}
+	animate();
+
+	stop.addEventListener('click', function() {
+		cancelAnimationFrame(requestID);
+	}, false)
+	restart.addEventListener('click', function() {
+		requestID = requestAnimationFrame(animate);
+	}, false)
+
+	</script>
+</body>
+
+</html>
